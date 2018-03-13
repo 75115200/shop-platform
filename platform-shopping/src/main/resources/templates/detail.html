@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>商品详情</title>
+    <link th:replace="dist">
+    <link rel="stylesheet" th:href="@{/css/detail.css}">
+    <link rel="stylesheet" th:href="@{/css/star-rating-svg.css}">
+</head>
+<body>
+    <div th:replace="header"></div>
+    <!-- 类别导航 -->
+    <div class="category_nav">
+        <div class="container">
+            <ul>
+                <li><a>首页</a></li>
+                <li><a>商品详情</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="detail">
+        <div class="container">
+            <ul class="nav nav-tabs">
+                <li><a data-toggle="tab" href="#detail_tab">详情</a></li>
+                <li class="active"><a data-toggle="tab" href="#comment_tab">评价</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="detail_tab" class="tab-pane">
+                    <div class="detail_tab_left">
+                        <div class="img_wrap">
+                            <img class="center-block" src="../res/img/20.jpg">
+                        </div>
+                        <button class="simple_btn">咨询商品</button>
+                    </div>
+                    <div class="detail_tab_right">
+                        <h3>商品标题</h3>
+                        <div class="overflow_wrap">
+                            <div class="detail_desc">商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述</div>
+                        </div>
+                        <span class="my-rating"></span>
+                        <p>
+                            <span class="old_price">¥350</span>
+                            <span class="new_price">¥150</span>
+                        </p>
+                            <p class="attr_choose">
+                                颜色:
+                                <button class="chosen">红</button>
+                                <button>黄</button>
+                                <button>蓝</button>
+                            </p>
+
+                            <p class="attr_choose">
+                                尺寸:
+                                <button class="chosen">大码</button>
+                                <button>小码</button>
+                                <button>中码</button>
+                            </p>
+
+                        <button class="simple_btn">添加到购物车</button>
+                    </div>
+                </div>
+                <div id="comment_tab" class="tab-pane active">
+                    <div class="comment">
+                        <a href="#" class="header_login_icon comment_left" data-toggle="modal" data-target=""><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
+                        <div class="comment_right">
+                            <div class="my-rating"></div>
+                            <p>这是一条评论相关的信息</p>
+                            <p class="order_info">黄色-中码</p>
+                            <p class="order_time">2018-03-11 23:59:59</p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="comment">
+                        <a href="#" class="header_login_icon comment_left" data-toggle="modal" data-target=""><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
+                        <div class="comment_right">
+                            <div class="my-rating"></div>
+                            <p>这是一条评论相关的信息</p>
+                            <p class="order_info">黄色-中码</p>
+                            <p class="order_time">2018-03-11 23:59:59</p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="comment">
+                        <a href="#" class="header_login_icon comment_left" data-toggle="modal" data-target=""><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
+                        <div class="comment_right">
+                            <div class="my-rating"></div>
+                            <p>这是一条评论相关的信息</p>
+                            <p class="order_info">黄色-中码</p>
+                            <p class="order_time">2018-03-11 23:59:59</p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="comment">
+                        <a href="#" class="header_login_icon comment_left" data-toggle="modal" data-target=""><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
+                        <div class="comment_right">
+                            <div class="my-rating"></div>
+                            <p>这是一条评论相关的信息</p>
+                            <p class="order_info">黄色-中码</p>
+                            <p class="order_time">2018-03-11 23:59:59</p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/jquery.star-rating-svg.js}"></script>
+    <script>
+        $(".attr_choose button").click(function() {
+            $($(this).siblings()).removeClass("chosen");
+            $(this).addClass("chosen");
+        });
+
+        $(".my-rating").starRating({
+            initialRating: 4,
+            starSize: 18,
+            readOnly: true
+        });
+    </script>
+</body>

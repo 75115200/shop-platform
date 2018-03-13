@@ -1,0 +1,170 @@
+a:hover {
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+}
+button {
+    outline: none;
+}
+
+.header {
+    margin-top: 20px;
+}
+.header_login_icon {
+    font-size: 0.8em;
+    color: #BEBEBE;
+    height: 60px;
+    width: 60px;
+    display: block;
+    line-height: 60px;
+    text-align: center;
+    border: 1px solid #BEBEBE;
+}
+/*头部中间的文字*/
+.header_center h1 {
+    margin: 0;
+    text-align: center;
+}
+.header_center h1 a {
+    color: #212121;
+    text-decoration: none;
+}
+.header_center h1 a span {
+    display: block;
+    font-size: .3em;
+    text-transform: capitalize;
+    letter-spacing: 13px;
+    padding-left: .5em;
+}
+/*头部的购物车*/
+.header_cart {
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+/*登录相关*/
+.normal_input {
+    outline: none;
+    border: 1px solid #DFDFDF;
+    background: #f5f5f5;
+    padding: 10px;
+    color: #212121;
+    width: 100%;
+    font-size: 14px;
+    margin-top: 10px;
+}
+.login_btn {
+    outline: none;
+    border: none;
+    background: #212121;
+    padding: 10px 0;
+    color: #fff;
+    width: 40%;
+    font-size: 1em;
+    text-transform: uppercase;
+    margin: 2em 0 0;
+}
+
+/*轮播*/
+.banner {
+    margin-top: 10px;
+}
+.banner .carousel-inner .item{
+    height: 280px;
+    overflow: hidden;
+}
+.banner a{
+    font-size: 80px;
+    line-height: 280px;
+}
+
+.split-title {
+    position: relative;
+    text-align: center;
+}
+.split-title:before{
+    content: '';
+    position: absolute;
+    top: 49%;
+    left: 32%;
+    background: #ff9b05;
+    height: 1px;
+    width: 6%;
+}
+.split-title:after{
+    content: '';
+    position: absolute;
+    top: 49%;
+    right: 32%;
+    background: #ff9b05;
+    height: 1px;
+    width: 6%;
+}
+/*商品*/
+.item_div {
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+/*商品提示*/
+.tip {
+    position: absolute;
+    right: 66%;
+    top: 1%;
+    width: 60px;
+    height: 60px;
+    background: #ff9b05;
+    border-radius: 50px;
+    -webkit-border-radius: 50px;
+}
+.tip h5 {
+    font-size: 1.2em;
+    color: #ffffff;
+    text-align: center;
+    padding: 0.6em 0 0;
+}
+
+.simple_btn {
+    font-size: 14px;
+    color: floralwhite;
+    margin: 0;
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: .5em 2em;
+    border: 1px darkorange;
+    border-radius: 25px;
+    background: orange;
+}
+.simple_btn:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.old_price {
+    color: #999;
+    font-size: .8em;
+    text-decoration: line-through;
+    padding-right: 1em;
+    font-weight: 300;
+}
+
+/*类别导航*/
+.category_nav {
+    background-color: #f5f5f5;
+}
+.category_nav ul {
+    margin: 0;
+    padding: 0;
+}
+.category_nav ul li {
+    display: inline-block;
+    font-size: 16px;
+    padding: 0.5em 0;
+}
+.category_nav ul li:after {
+    content: ">";
+    font-size: 16px;
+    color: #212121;
+    margin: 0 5px;
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <title></title>
+    <link th:replace="dist">
+    <link rel="stylesheet" th:href="@{/css/category.css}">
+</head>
+<body>
+<div th:replace="header"></div>
+<!-- 类别导航 -->
+<div class="category_nav">
+    <div class="container">
+        <ul>
+            <li><a>首页</a></li>
+            <li><a>全部商品</a></li>
+            <li><a>衬衫</a></li>
+        </ul>
+    </div>
+</div>
+<!--类目筛选-->
+<div class="container">
+    <div class="category_filter">
+        <p>
+            尺寸:
+            <input type="checkbox">大码
+            <input type="checkbox">中码
+            <input type="checkbox">小码
+        </p>
+        <p>
+            颜色:
+            <input type="checkbox">红
+            <input type="checkbox">黑
+            <input type="checkbox">蓝
+        </p>
+    </div>
+    <div class="filter_result">
+
+    </div>
+</div>
+<div class="item_list">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-sm-6 item_div">
+                <div class="tip">
+                    <h5>2折</h5>
+                </div>
+                <img th:src="@{/img/5.jpg}" class="img-responsive center-block">
+                <h5>商品名</h5>
+                <p>
+                    <span class="old_price">$300.00</span>
+                    <span>$250.00</span>
+                </p>
+                <a class="simple_btn">添加到购物车</a>
+            </div>
+
+            <div class="col-md-3 col-sm-6 item_div">
+                <div class="tip">
+                    <h5>2折</h5>
+                </div>
+                <img th:src="@{/img/5.jpg}" class="img-responsive center-block">
+                <h5>商品名</h5>
+                <p>
+                    <span class="old_price">$300.00</span>
+                    <span>$250.00</span>
+                </p>
+                <a class="simple_btn">添加到购物车</a>
+            </div>
+
+            <div class="col-md-3 col-sm-6 item_div">
+                <div class="tip">
+                    <h5>2折</h5>
+                </div>
+                <img th:src="@{/img/5.jpg}" class="img-responsive center-block">
+                <h5>商品名</h5>
+                <p>
+                    <span class="old_price">$300.00</span>
+                    <span>$250.00</span>
+                </p>
+                <a class="simple_btn">添加到购物车</a>
+            </div>
+
+            <div class="col-md-3 col-sm-6 item_div">
+                <div class="tip">
+                    <h5>2折</h5>
+                </div>
+                <img th:src="@{/img/5.jpg}" class="img-responsive center-block">
+                <h5>商品名</h5>
+                <p>
+                    <span class="old_price">$300.00</span>
+                    <span>$250.00</span>
+                </p>
+                <a class="simple_btn">添加到购物车</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
