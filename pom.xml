@@ -10,6 +10,7 @@
     <groupId>zzs</groupId>
     <artifactId>platform-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <relativePath/>
   </parent>
 
   <modules>
