@@ -21,6 +21,7 @@
     <module>platform-file</module>
     <module>platform-base-item</module>
     <module>platform-common</module>
+      <module>platform-admin</module>
   </modules>
   <name>shop-platform Maven Webapp</name>
   <url></url>
