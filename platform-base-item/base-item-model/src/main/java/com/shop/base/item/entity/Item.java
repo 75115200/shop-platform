@@ -3,10 +3,11 @@ package com.shop.base.item.entity;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
- * 商品数据
+ * 商品基础数据
  */
 @Document(collection = "item")
 public class Item {
@@ -38,7 +39,7 @@ public class Item {
     /**
      * 产品类型
      */
-    private String type;
+    private String typeId;
 
     /**
      * 原价
@@ -51,9 +52,19 @@ public class Item {
     private String lowest;
 
     /**
-     * 状态
+     * 库存信息
      */
-    private int status;
+    private ItemSku sku;
+
+    /**
+     * 商品属性
+     */
+    private List<ItemProperty> properties;
+
+    /**
+     * 上架时间
+     */
+    private Date publishDate;
 
     public String getId() {
         return id;
@@ -87,22 +98,6 @@ public class Item {
         this.detail = detail;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
     public String getOriginalPrice() {
         return originalPrice;
     }
@@ -125,5 +120,37 @@ public class Item {
 
     public void setFiles(List<String> files) {
         this.files = files;
+    }
+
+    public ItemSku getSku() {
+        return sku;
+    }
+
+    public void setSku(ItemSku sku) {
+        this.sku = sku;
+    }
+
+    public String getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
+    }
+
+    public List<ItemProperty> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(List<ItemProperty> properties) {
+        this.properties = properties;
+    }
+
+    public Date getPublishDate() {
+        return publishDate;
+    }
+
+    public void setPublishDate(Date publishDate) {
+        this.publishDate = publishDate;
     }
 }

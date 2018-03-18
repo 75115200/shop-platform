@@ -1,15 +1,20 @@
 package com.shop.shopping.controller;
 
+import com.shop.base.item.entity.Item;
+import com.shop.base.item.entity.ItemProperty;
+import com.shop.base.item.entity.ItemType;
 import com.shop.base.item.service.ItemService;
 import com.shop.base.user.entity.BaseUser;
 import com.shop.base.user.service.UserService;
 import com.shop.common.base.BaseResult;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 import static com.shop.common.base.BaseResult.fail;
 import static com.shop.common.base.BaseResult.success;
@@ -38,7 +43,15 @@ public class PublicController {
      * @return
      */
     @RequestMapping("/category.html")
-    public String category() {
+    public String category(String typeId, Map<String, Object> attrs) {
+        if (StringUtils.isBlank(typeId)) {
+            List<ItemType> types = itemService.listAllType();
+            attrs.put("types", types);
+        } else {
+            ItemType type = itemService.getType(typeId);
+            attrs.put("type", type);
+            attrs.put("properties", type.getProperties());
+        }
         return "category";
     }
 
@@ -47,7 +60,9 @@ public class PublicController {
      * @return
      */
     @RequestMapping("/detail.html")
-    public String detail() {
+    public String detail(String itemId, Map<String, Object> attr) {
+        Item item = itemService.getItem(itemId);
+        attr.put("item", item);
         return "detail";
     }
 

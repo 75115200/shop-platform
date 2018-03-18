@@ -14,88 +14,107 @@
 <div class="category_nav">
     <div class="container">
         <ul>
-            <li><a>首页</a></li>
-            <li><a>全部商品</a></li>
-            <li><a>衬衫</a></li>
+            <li><a th:href="@{/public/home.html}">首页</a></li>
+            <li><a th:href="@{/public/category.html}">全部商品</a></li>
+            <li th:if="${type}" th:data="${type.id}" id="typeId" th:text="${type.type}">
+                衬衫
+            </li>
         </ul>
     </div>
 </div>
 <!--类目筛选-->
 <div class="container">
     <div class="category_filter">
-        <p>
-            尺寸:
-            <input type="checkbox">大码
-            <input type="checkbox">中码
-            <input type="checkbox">小码
+        <p th:if="${not #lists.isEmpty(types)}">
+            商品类型:
+            <a th:each="t:${types}" th:href="@{/public/category.html(typeId=${t.id})}" th:text="${t.type}" th:data="${t.id}" type="checkbox">
         </p>
-        <p>
-            颜色:
-            <input type="checkbox">红
-            <input type="checkbox">黑
-            <input type="checkbox">蓝
+
+        <p th:each="prop : ${properties}">
+            <span th:text="${prop.getName()}"></span>
+            <input th:each="d : ${prop.details}" th:text="${d.val}" th:value="${d.code}" name="properties" type="checkbox">
         </p>
     </div>
-    <div class="filter_result">
-
+    <div class="filter_text">
+        <input type="text" name="name" placeholder="过滤文字" id="filter_name" class="">
+        <button type="button" id="query_btn">提交</button>
     </div>
 </div>
 <div class="item_list">
     <div class="container">
-        <div class="row">
-            <div class="col-md-3 col-sm-6 item_div">
-                <div class="tip">
-                    <h5>2折</h5>
-                </div>
-                <img th:src="@{/img/5.jpg}" class="img-responsive center-block">
-                <h5>商品名</h5>
-                <p>
-                    <span class="old_price">$300.00</span>
-                    <span>$250.00</span>
-                </p>
-                <a class="simple_btn">添加到购物车</a>
-            </div>
-
-            <div class="col-md-3 col-sm-6 item_div">
-                <div class="tip">
-                    <h5>2折</h5>
-                </div>
-                <img th:src="@{/img/5.jpg}" class="img-responsive center-block">
-                <h5>商品名</h5>
-                <p>
-                    <span class="old_price">$300.00</span>
-                    <span>$250.00</span>
-                </p>
-                <a class="simple_btn">添加到购物车</a>
-            </div>
-
-            <div class="col-md-3 col-sm-6 item_div">
-                <div class="tip">
-                    <h5>2折</h5>
-                </div>
-                <img th:src="@{/img/5.jpg}" class="img-responsive center-block">
-                <h5>商品名</h5>
-                <p>
-                    <span class="old_price">$300.00</span>
-                    <span>$250.00</span>
-                </p>
-                <a class="simple_btn">添加到购物车</a>
-            </div>
-
-            <div class="col-md-3 col-sm-6 item_div">
-                <div class="tip">
-                    <h5>2折</h5>
-                </div>
-                <img th:src="@{/img/5.jpg}" class="img-responsive center-block">
-                <h5>商品名</h5>
-                <p>
-                    <span class="old_price">$300.00</span>
-                    <span>$250.00</span>
-                </p>
-                <a class="simple_btn">添加到购物车</a>
-            </div>
+        <div class="row" id="main_item">
+            <!--<div class="col-md-3 col-sm-6 item_div">-->
+                <!--<div class="tip">-->
+                    <!--<h5>2折</h5>-->
+                <!--</div>-->
+                <!--<img th:src="@{/img/5.jpg}" class="img-responsive center-block">-->
+                <!--<h5>商品名</h5>-->
+                <!--<p>-->
+                    <!--<span class="old_price">$300.00</span>-->
+                    <!--<span>$250.00</span>-->
+                <!--</p>-->
+                <!--<a class="simple_btn">添加到购物车</a>-->
+            <!--</div>-->
         </div>
     </div>
 </div>
 
+<script type="text/javascript">
+    function callbackItem(data) {
+        var items = data.response.docs;
+        $("#main_item").empty();
+        for (var i = 0; i < items.length; i++) {
+            var tip = '<div class="tip"><h5>' + Math.ceil(items[i].lowest/items[i].originalPrice * 10) + '折</h5></div>';
+            var img = '<a href="' + BASE_URL + "/public/detail.html?itemId=" + items[i]._id + '"><img src="' + FILE_URL + items[i].files + '" class="img-responsive center-block"></a>';
+            var name = '<h5>' + items[i].name + '</h5>';
+            var price = '<p><span class="old_price">¥' + items[i].originalPrice + '</span><span>¥' + items[i].lowest + '</span></p>';
+            var btn = '<a class="simple_btn">添加到购物车</a>';
+            var div = '<div class="col-md-3 col-sm-6 item_div">' + tip + img + name + price + btn + '</div>';
+            $("#main_item").append(div);
+        }
+    }
+
+    function queryItem() {
+        // 商品名称参数
+        var param = "";
+        var name = $("#filter_name").val();
+        if (name != "") {
+            param = "name:" + name + "\n";
+        }
+        // 商品属性参数
+        $("input[name=properties]:checked").each(function() {
+            var prop = "properties:" + this.value + "\n";
+            param += prop;
+        });
+
+        var data = {};
+        var typeId = $("#typeId").attr("data");
+        if (typeId && typeId != "") {
+            data['fq'] = "typeId:" + typeId;
+        }
+        if (param != "") {
+            data["q"] = param;
+        } else {
+            data["q"] = "*:*";
+        }
+        $.ajax({
+            url: SOLR_URL,
+            data : data ,
+            success : function(data) {
+                callbackItem(data);
+            },
+            dataType: 'jsonp',
+            jsonp: 'json.wrf'
+        });
+    }
+
+    $(function() {
+        queryItem();
+    })
+
+    $("#query_btn").click(function() {
+        queryItem();
+    })
+
+</script>
 </body>
