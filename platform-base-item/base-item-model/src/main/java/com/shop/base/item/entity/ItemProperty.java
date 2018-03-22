@@ -31,6 +31,11 @@ public class ItemProperty {
     private String name;
 
     /**
+     * 是否必须,1 - 必须， 0 - 非必须
+     */
+    private int required;
+
+    /**
      * 属性值集合
      */
     private List<ItemPropertyDetail> details;
@@ -99,5 +104,13 @@ public class ItemProperty {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public int getRequired() {
+        return required;
+    }
+
+    public void setRequired(int required) {
+        this.required = required;
     }
 }
