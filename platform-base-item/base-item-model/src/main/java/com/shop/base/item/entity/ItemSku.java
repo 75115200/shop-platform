@@ -10,7 +10,6 @@ public class ItemSku {
     /**
      * 库存code值
      * {@link ItemPropertyDetail#code}
-     * 1A 2B 3C
      */
     private String code;
 

@@ -5,6 +5,11 @@ package com.shop.base.item.entity;
  */
 public class ItemPropertyDetail {
     /**
+     * 主键
+     */
+    private String id;
+
+    /**
      * 详情code值
      */
     private String code;
@@ -33,5 +38,13 @@ public class ItemPropertyDetail {
 
     public void setVal(String val) {
         this.val = val;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

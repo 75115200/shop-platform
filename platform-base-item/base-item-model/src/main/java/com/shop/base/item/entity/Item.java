@@ -57,11 +57,6 @@ public class Item {
     private ItemSku sku;
 
     /**
-     * 商品属性
-     */
-    private List<ItemProperty> properties;
-
-    /**
      * 上架时间
      */
     private Date publishDate;
@@ -136,14 +131,6 @@ public class Item {
 
     public void setTypeId(String typeId) {
         this.typeId = typeId;
-    }
-
-    public List<ItemProperty> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(List<ItemProperty> properties) {
-        this.properties = properties;
     }
 
     public Date getPublishDate() {

@@ -19,16 +19,6 @@ public class ItemType {
      */
     private String type;
 
-    /**
-     * 类型拥有的属性
-     */
-    private List<ItemProperty> properties;
-
-    /**
-     * 版本号
-     */
-    private long version;
-
     public String getId() {
         return id;
     }
@@ -45,19 +35,4 @@ public class ItemType {
         this.type = type;
     }
 
-    public List<ItemProperty> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(List<ItemProperty> properties) {
-        this.properties = properties;
-    }
-
-    public long getVersion() {
-        return version;
-    }
-
-    public void setVersion(long version) {
-        this.version = version;
-    }
 }
