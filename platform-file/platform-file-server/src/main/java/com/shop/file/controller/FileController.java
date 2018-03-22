@@ -4,7 +4,7 @@ import com.shop.common.base.BaseResult;
 import com.shop.common.util.JsonUtil;
 import com.shop.file.model.FileInfo;
 import com.shop.file.service.FileService;
-import com.shop.file.util.HttpUtil;
+import com.shop.file.util.HttpFileUtil;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,13 +71,12 @@ public class FileController {
                 fileInfos.add(fileService.saveFileInfo(fileInfo));
             }
 
-            // 回调
-            if (!CollectionUtils.isEmpty(fileInfos)) {
-                Map<String, Object> fileParams = new HashMap<>();
-                fileParams.put("data", resloveParams(request));
-                fileParams.put("fileInfo", fileInfos);
-                result = HttpUtil.postJson(callback, JsonUtil.objToJson(fileParams));
+            if (CollectionUtils.isEmpty(fileInfos)) {
+                return BaseResult.fail("上传文件失败,列表为空");
             }
+
+            // 回调
+            HttpFileUtil.callback(callback, request.getParameterMap(), fileInfos);
         } catch (IOException e) {
             LOGGER.error("上传文件失败");
             return BaseResult.fail("上传文件失败，IOE异常");
@@ -125,22 +124,6 @@ public class FileController {
             throw new IllegalArgumentException("文件格式不正确");
         }
         return UUID.randomUUID().toString() + fileName.substring(index);
-    }
-
-    /**
-     * 将request中参数转为map
-     * @param request
-     * @return
-     */
-    private Map<String, String> resloveParams(HttpServletRequest request) {
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        Map<String, String> result = new LinkedHashMap<String, String>(parameterMap.size());
-        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-            if (entry.getValue().length > 0) {
-                result.put(entry.getKey(), entry.getValue()[0]);
-            }
-        }
-        return result;
     }
 
 }
