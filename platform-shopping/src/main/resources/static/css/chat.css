@@ -1,0 +1,114 @@
+.chat {
+    min-width: 600px;
+    min-height: 470px;
+    position: absolute;
+    z-index: 100;
+    top: 50%;
+    left: 50%;
+    margin-top: -220px;
+    margin-left: -300px;
+    border: 2px solid rgba(245,245,245,.7);
+    display: none;
+}
+.chat_top_name {
+    padding: 20px 10px;
+    font-size: 20px;
+    margin: 0;
+    background-color: rgba(245,245,245,.7);
+}
+.chat_list {
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #ffffff;
+    height: 262px;
+}
+.chat_list ul {
+    padding: 0;
+}
+.chat_list ul li {
+    list-style: none;
+    margin-top: 10px;
+}
+.chat_list_mine {
+    margin-top: 10px;
+    text-align: right;
+}
+.chat_list_mine p {
+    color: #999;
+    padding-right: 20px;
+    margin: 0;
+}
+.chat_list_mine p span {
+    margin-left: 20px;
+}
+
+.chat_mine_text {
+    margin-left: 0;
+    text-align: left;
+    background-color: #5FB878;
+    color: #fff;
+    display: inline-block;
+    font-size: 14px;
+    padding: 8px 15px;
+    word-break: break-all;
+    margin-right: 20px;
+    max-width: 400px;
+}
+.chat_other_text {
+    background-color: #5FB878;
+    color: #fff;
+    display: inline-block;
+    font-size: 14px;
+    padding: 8px 15px;
+    word-break: break-all;
+    margin-left: 20px;
+    max-width: 400px;
+}
+.chat_list_other p {
+    color: #999;
+    padding-left: 20px;
+    margin: 0;
+}
+.chat_list_other p span {
+    margin-right: 20px;
+}
+
+.chat_footer {
+    border-top: 1px solid #F1F1F1;
+    padding: 0 5px;
+}
+.chat_footer_input textarea {
+    display: block;
+    width: 100%;
+    height: 68px;
+    padding: 5px 0;
+    line-height: 20px;
+    font-size: 16px;
+    border: none;
+    overflow: auto;
+    resize: none;
+    background: 0;
+    outline: none;
+}
+.chat_footer_div {
+    text-align: right;
+    margin-right: 10px;
+}
+.chat_footer_btn {
+    display: inline-block;
+    font-size: 14px;
+    line-height: 32px;
+    margin-left: 5px;
+    padding: 0 20px;
+    border: none;
+    background-color: #5FB878;
+    color: #fff;
+    margin-bottom: 10px;
+}
+.chat_footer_btn:hover {
+    background-color: #69BC80;
+}
+.tool_icon {
+    padding: 6px;
+    cursor: pointer;
+}

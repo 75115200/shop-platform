@@ -1,0 +1,105 @@
+﻿<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+	<meta th:replace="/admin/head::meta">
+<title>分类管理</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 商品管理 <span class="c-gray en">&gt;</span> 类型管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div class="text-c">
+		<form class="Huiform" method="post" action="" target="_self">
+			<input type="text" placeholder="添加类型..." value="" name="type" id="type_input" class="input-text" style="width:240px">
+			<span class="btn-upload form-group">
+			</span><button type="button" class="btn btn-success" id="" name="" onClick="addType(this);"><i class="Hui-iconfont">&#xe600;</i> 添加</button>
+		</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a></span> <span class="r">共有数据：<strong th:text="${#lists.size(types)}">54</strong> 条</span> </div>
+	<div class="mt-20">
+		<table class="table table-border table-bordered table-bg table-sort">
+			<thead>
+				<tr class="text-c">
+					<th width="25"><input type="checkbox" name="" value=""></th>
+					<th width="70">ID</th>
+					<th width="120">类型</th>
+					<th width="70">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="t:${types}" class="text-c">
+					<td><input name="" type="checkbox" value=""></td>
+					<td th:text="${t.id}">1</td>
+					<td th:text="${t.type}">衣服</td>
+					<td class="f-14 product-brand-manage"><a style="text-decoration:none" class="ml-5" th:data="${t.id}" onClick="delType(this)" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script th:replace="/admin/footer::common"></script>
+
+<script th:replace="/admin/footer::date"></script>
+<script th:replace="/admin/footer::datatables"></script>
+
+<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+$('.table-sort').dataTable({
+	ordering : false
+});
+
+function delType(obj) {
+	if (obj) {
+        $.ajax ({
+            url : BASE_URL + "/manager/delType.json",
+            type : 'post',
+            data : {
+             	"id" : $(obj).attr("data")
+			},
+            dataType : 'json',
+            success : function (res) {
+                if (res.status == 1) {
+                    $.Huimodalalert('删除成功',1500);
+                    location.reload();
+                } else {
+                    $.Huimodalalert(res.message,1500);
+                }
+            },
+            error : function () {
+                alert("错误");
+            }
+        });
+	}
+}
+
+function addType() {
+    var type = $("#type_input").val();
+    if (type == '') {
+        $.Huimodalalert('请输入商品类型！',1500);
+        return false;
+	}
+
+    $.ajax ({
+        url : BASE_URL + "/manager/addType.json",
+        type : 'post',
+        data : {
+            "type" : type
+		},
+        dataType : 'json',
+        success : function (res) {
+            if (res.status == 1) {
+                $.Huimodalalert('添加成功',1500);
+                location.reload();
+			} else {
+                $.Huimodalalert(res.message,1500);
+			}
+        },
+        error : function () {
+            alert("错误");
+        }
+    });
+}
+</script>
+</body>
+</html>

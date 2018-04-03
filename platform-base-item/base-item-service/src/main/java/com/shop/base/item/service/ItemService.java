@@ -3,7 +3,10 @@ package com.shop.base.item.service;
 import com.shop.base.item.entity.Item;
 import com.shop.base.item.entity.ItemProperty;
 import com.shop.base.item.entity.ItemType;
+import com.shop.common.base.Page;
 
+import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,13 +29,6 @@ public interface ItemService {
     Item getItem(String id);
 
     /**
-     * 添加商品类型
-     * @param itemType 商品类型
-     * @return 商品类型
-     */
-    ItemType addItemType(ItemType itemType);
-
-    /**
      * 列出热门商品
      * @return
      */
@@ -51,4 +47,63 @@ public interface ItemService {
      */
     ItemType getType(String typeId);
 
+    /**
+     * 添加商品类型
+     * @param itemType 商品类型
+     * @return 商品类型
+     */
+    ItemType addItemType(ItemType itemType);
+
+    /**
+     * 删除商品类型
+     * @param id
+     */
+    void delItemType(String id);
+
+    /**
+     * 查询商品属性
+     * @param typeId 类型id
+     * @param required
+     * @return
+     */
+    List<ItemProperty> listProperties(String typeId, int required);
+
+    /**
+     * 保存商品属性
+     * @param itemProperty
+     * @return
+     */
+    ItemProperty saveItemProperty(ItemProperty itemProperty);
+
+    /**
+     * 通过code值列出属性
+     * @param codes
+     * @return
+     */
+    List<ItemProperty> listItemPropertyByCode(Collection<String> codes);
+
+    /**
+     * 获取商品属性
+     * @param id
+     * @return
+     */
+    ItemProperty getItemProperty(String id);
+
+    /**
+     * 分页列出商品属性
+     * @param page 分页信息
+     * @param typeId 类型id，可为null
+     * @return
+     */
+    Page<ItemProperty> listPropertyByPage(Page page, String typeId);
+
+    /**
+     * 按照类型列出商品
+     * @param typeId
+     * @param page
+     * @return
+     */
+    Page<Item> listItemByType(String typeId, Page page);
+
+    ItemProperty queryByDetailCode(String detailCode);
 }

@@ -1,0 +1,141 @@
+﻿<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+	<meta th:replace="/admin/head::meta">
+<title>产品管理</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 商品管理 <span class="c-gray en">&gt;</span> 产品管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div class="cl pd-5 bg-1 bk-gray">
+        <!--<span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a></span>-->
+        <span class="l"><a href="javascript:;" onclick="itemAdd('添加商品','itemAdd.html','1000','500')" style="margin-left: 20px" class="btn btn-success radius"><i class="Hui-iconfont">&#xe6e2;</i> 添加商品</a></span>
+    </div>
+	<div class="mt-20">
+		<table id="data_table" class="table table-border table-bordered table-bg text-c">
+		</table>
+	</div>
+</div>
+
+<script th:replace="/admin/footer::common"></script>
+
+<script th:replace="/admin/footer::date"></script>
+<script th:replace="/admin/footer::datatables"></script>
+
+<script type="text/javascript">
+
+var dataTable = $('#data_table').DataTable({
+	"order": [],
+	searching: false,
+	lengthMenu: [5, 10, 20, 30, 50],
+	serverSide: true,
+	// 手动调用异步查询
+	ajax: function(data, callback, settings) {
+		$.ajax({
+			type: "GET",
+			url: BASE_URL + "/manager/listItemByPage.json",
+			cache : false,  //禁用缓存
+			data: {
+				"begin" : data.start,
+				"pageSize" : data.length
+			},
+			dataType: "json",
+			success: function(result) {
+				var tableData = {};
+				tableData.recordsTotal = result.data.totalElements;
+				tableData.recordsFiltered = result.data.totalElements;
+				tableData.data = result.data.content;
+
+				callback(tableData);
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+			}
+		});
+	},
+	aoColumns: [
+		{
+			"sTitle": '商品编号',
+			"sClass": "text-center",
+			"mDataProp": "no",
+			"orderable": false,
+			"searchable": false,
+			"orderable" : false
+		},
+		{
+			"sTitle": '商品名称',
+			"sClass": "text-center",
+			"mDataProp": "name",
+			"orderable": false,
+			"searchable": false
+		},
+		{
+			"sTitle": '商品详情',
+			"sClass": "text-center",
+			"mDataProp": "detail",
+			"orderable": false,
+			"searchable": false
+		},
+		{
+			"sTitle": '商品图片',
+			"sClass": "text-center",
+			"mDataProp": "files",
+			"orderable": false,
+			"searchable": false,
+            "render":function(data) {
+			    if (data.length > 0) {
+                    return "<img class='img-responsive' src='" + FILE_URL + data[0] + "'>";
+				}
+                return "无可用图片";
+            }
+		},
+		{
+			"sTitle": '商品类型',
+			"sClass": "text-center",
+			"mDataProp": "typeId",
+			"orderable": false,
+			"searchable": false,
+			"render":function(data) {
+				return data;
+			}
+		},
+		{
+			"sTitle": '原价',
+			"sClass": "text-center",
+			"mDataProp": "originalPrice",
+			"orderable": false,
+			"searchable": false
+		},
+        {
+            "sTitle": '最低价',
+            "sClass": "text-center",
+            "mDataProp": "lowest",
+            "orderable": false,
+            "searchable": false
+        },
+		{
+			"sTitle": '操作',
+			"sClass": "text-center",
+			"mDataProp": null,
+			"orderable": false,
+			"searchable": false,
+			"render":function(data) {
+			    var edit = '<a onclick="" class="btn btn-link size-MINI">编辑</a>';
+			    var addStock = '<a onclick="" class="btn btn-link size-MINI">添加库存</a>';
+                var shelf = '<a onclick="" class="btn btn-link size-MINI">下架</a>';
+                return edit + addStock + shelf;
+			}
+		}
+	]
+});
+
+function itemAdd(title,url,w,h) {
+    layer_show(title,url);
+}
+
+function reloadData() {
+    dataTable.ajax.reload();
+}
+</script>
+</body>
+</html>

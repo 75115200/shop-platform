@@ -3,9 +3,12 @@ package com.shop.base.user.service;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.shop.base.user.dao.UserDao;
+import com.shop.base.user.dao.UserRoleDao;
 import com.shop.base.user.entity.BaseUser;
+import com.shop.common.base.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.Charset;
 import java.util.UUID;
@@ -18,9 +21,17 @@ import static com.shop.common.constant.Constant.UTF8;
 public class UserServiceImpl implements UserService{
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private UserRoleDao userRoleDao;
 
     @Override
+    @Transactional
     public BaseUser register(BaseUser baseUser) {
+        BaseUser user = userDao.findBaseUserByUsername(baseUser.getUsername());
+        if (user != null) {
+            throw new BusinessException("用户名已存在");
+        }
+
         String salt = UUID.randomUUID().toString();
         HashCode hashingPwd = Hashing.md5().hashString(salt + "-" + baseUser.getPassword(), UTF8);
 

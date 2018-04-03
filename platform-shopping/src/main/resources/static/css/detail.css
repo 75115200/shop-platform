@@ -77,3 +77,8 @@
     font-size: 14px;
     color: #666;
 }
+.stock_num {
+    text-align: center;
+    width: 42px;
+    margin-right: 10px;
+}

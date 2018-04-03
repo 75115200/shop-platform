@@ -7,6 +7,7 @@
     <link th:replace="dist">
     <link rel="stylesheet" th:href="@{/css/detail.css}">
     <link rel="stylesheet" th:href="@{/css/star-rating-svg.css}">
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
 </head>
 <body>
     <div th:replace="header"></div>
@@ -32,7 +33,7 @@
                         <div class="img_wrap">
                             <img class="center-block" th:src="${FILE_URL} + ${item.files[0]}">
                         </div>
-                        <button class="simple_btn">咨询商品</button>
+                        <button class="simple_btn" id="chat_btn">咨询商品</button>
                     </div>
                     <div class="detail_tab_right">
                         <h3 th:text="${item.name}">商品标题</h3>
@@ -42,14 +43,14 @@
                         <span class="my-rating"></span>
                         <p>
                             <span class="old_price" th:text="${item.originalPrice}">¥350</span>
-                            <span class="new_price" th:text="${item.lowest}">¥150</span>
+                            <span class="new_price" id="price" th:text="${item.lowest}">¥150</span>
                         </p>
-                        <p class="attr_choose" th:each="prop : ${item.properties}">
+                        <p class="attr_choose" th:each="prop : ${properties}">
                             <span th:text="${prop.name}">颜色</span>
-                            <button th:each="detail : ${prop.details}" th:text="${detail.val}">红</button>
+                            <button th:data="${detail.code}" th:each="detail : ${prop.details}" th:text="${detail.val}">红</button>
                         </p>
-                        <p>库存量:30件</p>
-                        <button class="simple_btn">添加到购物车</button>
+                        <p>数量&nbsp;<input class="stock_num" id="num" type="number" value="1" min="1">库存<span id="stock">0</span>件</p>
+                        <button class="simple_btn" disabled id="add_btn">添加到购物车</button>
                     </div>
                 </div>
                 <div id="comment_tab" class="tab-pane">
@@ -99,6 +100,38 @@
         </div>
     </div>
 
+    <div class="chat">
+        <p class="chat_top_name">在线客服1</p>
+        <div class="chat_list">
+            <ul>
+                <li class="chat_list_mine">
+                    <p>2017-3-28 12:00<span>大佬</span></p>
+                    <div class="chat_mine_text">
+                        哈哈哈哈
+                    </div>
+                </li>
+                <li class="chat_list_other">
+                    <p><span>大佬</span>2017-3-28 12:00</p>
+                    <div class="chat_other_text">
+                        哈哈哈哈
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="chat_footer">
+            <div class="chat_footer_tool">
+                <span class="glyphicon glyphicon-briefcase tool_icon"></span>
+            </div>
+            <div class="chat_footer_input">
+                <textarea id="chat_text"></textarea>
+            </div>
+            <div class="chat_footer_div">
+                <button type="button" id="send_btn" class="chat_footer_btn" onclick="sendMsg()">发送</button>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="itemId" name="itemId" th:value="${item.id}">
+
     <script th:src="@{/js/jquery.star-rating-svg.js}"></script>
     <script>
         $(".attr_choose button").click(function() {
@@ -106,10 +139,131 @@
             $(this).addClass("chosen");
         });
 
+        $("#chat_btn").click(function() {
+            layer.open({
+                type: 1,
+                title: "",
+                area: ['620px', '510px'], //宽高
+                shadeClose: true,
+                content: $(".chat")
+            });
+            $(".chat_list")[0].scrollTop = $(".chat_list")[0].scrollHeight;
+        });
+        function sendMsg() {
+            var li = '<li class="chat_list_mine">';
+            var p = '<p>2017-3-28 12:00<span>大佬</span></p>';
+            var $chatText = $("#chat_text");
+            var text = '<div class="chat_mine_text">' + $chatText.val() + '</div></li>';
+            $chatText.val("");
+            $(".chat_list ul").append(li + p + text);
+            $(".chat_list")[0].scrollTop = $(".chat_list")[0].scrollHeight;
+        }
+
+        $(".attr_choose button").click(function() {
+            var $chosen = $(".chosen");
+            if ($(".attr_choose").length == $chosen.length) {
+                var code = getSkuCode();
+
+                $.ajax ({
+                    url : BASE_URL + '/public/getSku.json',
+                    type : 'post',
+                    data : {
+                        "itemId" : $("#itemId").val(),
+                        "skuCode" : code
+                    },
+                    dataType : 'json',
+                    success : function (res) {
+                        if (res.status == 1) {
+                            $("#stock").html(res.data.stock);
+                            $("#price").html(res.data.price);
+                            $("#add_btn").removeAttr("disabled");
+                        } else {
+                            $("#stock").html(0);
+                            $("#add_btn")[0].disabled = "disabled";
+                        }
+                    },
+                    error : function () {
+                        alert("错误");
+                    }
+                });
+            }
+        })
+
         $(".my-rating").starRating({
             initialRating: 4,
             starSize: 18,
             readOnly: true
         });
+
+        $("#add_btn").click(function() {
+            if (!isLogined()) {
+                return ;
+            }
+
+            var loader = layer.load(1, {
+                shade: [0.1,'#fff'] //0.1透明度的白色背景
+            });
+
+            if($(".attr_choose").length != $(".chosen").length) {
+                layer.msg("请选择商品规格");
+                return false;
+            }
+
+            var skuCode = getSkuCode();
+
+            var num = parseInt($("#num").val());
+            if (num <= 0 || num > $("#stock").html()) {
+                layer.msg("请输入正确的数量");
+            }
+
+            $.ajax ({
+                url : BASE_URL + '/user/addItemToCart.json',
+                type : 'post',
+                data : {
+                    "itemId" : $("#itemId").val(),
+                    "skuCode" : skuCode,
+                    "num" : num
+                },
+                dataType : 'json',
+                success : function (res) {
+                    if (res.status == 0) {
+                        layer.msg(res.message);
+                    } else {
+                        layer.msg("添加成功！");
+                        addCartSum();
+                    }
+                    layer.close(loader);
+                },
+                error : function () {
+                    layer.msg("连接服务器错误");
+                    layer.close(loader);
+                }
+            });
+        });
+
+        function getSkuCode() {
+            var code = "";
+            $(".chosen").each(function(i,btn) {
+                code += $(btn).attr("data") + ";";
+            });
+
+            // 去除尾部;
+            if (code.length > 0 && code.charAt(code.length - 1) == ';') {
+                code = code.substring(0, code.length - 1);
+            }
+
+            return code;
+        }
+
+        function middleModle(selectorName){   //参数： 定义的class或ID，，其他
+            var fatherHeight = $(".wraper").height();//获取当前窗口高度
+            var fatherWidth = $(".wraper").width();//获取当前窗口宽度
+            var tanHeight = selectorName.height();//获取弹出层高度
+            var tanWeight = selectorName.width();//获取弹出层宽度
+            var poTop = (fatherHeight - tanHeight)/2;
+            var poLeft = (fatherWidth - tanWeight)/2;
+            selectorName.css({"left": poLeft + "px", "top":poTop + "px", "display":"block"});//设置position位置
+        }
     </script>
 </body>
+</html>

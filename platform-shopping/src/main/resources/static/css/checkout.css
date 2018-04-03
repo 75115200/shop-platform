@@ -25,6 +25,12 @@ i:hover{
     background-color: #ff9b05;
     color: #ffffff;
 }
+.checkout_bottom_left button {
+    font-size: 18px;
+    height: 42px;
+    width: 280px;
+}
+
 .checkout_bottom_left h4 {
     padding: 0 5px;
 }
@@ -43,4 +49,7 @@ i:hover{
     font-size: 1em;
     background: #212121;
     text-decoration: none;
+}
+.checkout_bottom_left h3 {
+    cursor: pointer;
 }

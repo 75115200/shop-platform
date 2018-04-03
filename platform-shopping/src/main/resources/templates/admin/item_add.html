@@ -1,0 +1,219 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+	<meta th:replace="admin/head::meta">
+<title>添加商品</title>
+</head>
+<body>
+<article class="page-container">
+	<form class="form form-horizontal" id="item_add_form">
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品类型：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+		<span class="select-box" style="width:150px;">
+			<select class="select" id="type_selector" name="typeId" size="1">
+				<option th:each="t:${types}" th:value="${t.id}" th:text="${t.type}">衣服</option>
+			</select>
+		</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品编号：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" maxlength="13" placeholder="请输入13位产品编号" id="no" name="no">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品名称：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="产品名称" id="name" name="name">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>原价格：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="number" class="input-text" value="" placeholder="" id="originalPrice" name="originalPrice">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">产品详情：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<textarea name="" cols="" rows="" class="textarea"  placeholder="描述一下商品..." dragonfly="true" th:name="detail"></textarea>
+			<p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">商品图片：</label>
+		<input type="file" multiple id="file" name="file" >
+	</div>
+
+	<input type="hidden" id="lowest" name="lowest" value="0">
+	</form>
+	<div class="row cl">
+		<table id="stock_table" class="mt-20 table table-border table-bordered text-center">
+			<thead>
+				<tr id="stock_table_header" class="text-c">
+					<th th:each="p:${properties}" th:text="${p.name}">颜色</th>
+					<th>价格</th>
+					<th>库存</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody id="stock_table_body" class="text-c">
+				<tr>
+					<td th:each="p:${properties}">
+						<span class="select-box" style="width:150px;">
+							<select class="select" size="1">
+								<option th:each="d:${p.details}" th:value="${d.code}" th:text="${d.val}" value="0">衣服</option>
+							</select>
+						</span>
+					</td>
+					<td><input type="number" id="price" class="input-text"></td>
+					<td><input type="number" id="stock" class="input-text"></td>
+					<td><button class="btn btn-success" type="button" onclick="appendSKU(this)">确定</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="row cl" style="text-align: center">
+		<input class="btn btn-primary radius" type="button" id="submit_btn" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+	</div>
+</article>
+
+<script th:replace="admin/footer::common"></script>
+<th:block th:replace="admin/footer::webuploader"></th:block>
+<script type="text/javascript">
+	//TODO 添加库存时进行严格校验
+$("#submit_btn").click(function() {
+    if ($('#file')[0].files.length == 0) {
+        $.Huimodalalert("请上传商品图片", 1000);
+        return ;
+    }
+
+    var formData = new FormData($("#item_add_form")[0]);
+    formData.append("callback", WHOLE_URL + "/manager/addItem.json");
+
+    for(var i=0; i<$('#file')[0].files.length;i++){
+        formData.append('file', $('#file')[0].files[i]);
+    }
+
+    // 获取sku库存，跳过首行
+    var trs = $("#stock_table_body tr");
+	for (var i = 1; i < trs.length; i++) {
+	    var index = i-1;
+	    formData.append("sku[" + index + "].code", $(trs[i]).find("input[name='sku']").val());
+        formData.append("sku[" + index + "].price", $(trs[i]).find("input[name='price']").val());
+        formData.append("sku[" + index + "].stock", $(trs[i]).find("input[name='stock']").val());
+	}
+
+	$("input[name='detailCode']").each(function(i, input) {
+		formData.append("detailCodes", $(input).val());
+	})
+
+    $.ajax ({
+        url : FILE_UPLOAD_URL,
+        type : 'post',
+        processData: false,
+        contentType: false,
+        data: formData,
+        dataType : 'json',
+        success : function (res) {
+            if (res.status == 1) {
+                $.Huimodalalert("添加成功", 1500);
+                window.parent.reloadData();
+                layer.close();
+			} else {
+                $.Huimodalalert(res.message, 1500);
+            }
+        },
+        error : function () {
+            alert("错误");
+        }
+    });
+});
+
+$("#type_selector").change(function() {
+    var typeId = $(this).val();
+    if (typeId == '') {
+        $.Huimodalalert("类型错误", 1500);
+        return ;
+    }
+    $.ajax ({
+        url : BASE_URL + '/manager/listRequiredProperties.json',
+        type : 'post',
+        data : {
+            "typeId" : typeId
+		},
+        dataType : 'json',
+        success : function (res) {
+            if (res.status == 0) {
+                $.Huimodalalert(res.message, 1500);
+                return false;
+			}
+
+            var props = res.data;
+            var $th = $("#stock_table_header");
+            var $body = $("#stock_table_body");
+            $th.empty();
+            $body.empty();
+
+            var tr_end = '<td><input type="number" id="price" class="input-text"></td><td><input type="number" id="stock" class="input-text"></td><td><button type="button" class="btn btn-success" onclick="appendSKU(this)">确定</button></td></tr>'
+			var tr = '<tr>';
+            for (var i = 0; i < props.length; i++) {
+                $th.append('<th>' + props[i].name + '</th>');
+
+                tr += '<td><span class="select-box" style="width:150px;"><select class="select" name="detailCode" size="1">';
+                $.each(props[i].details, function(i, d) {
+                    tr += '<option value="' + d.code + '">' + d.val + '</option>';
+                });
+                tr += '</select></span></td>'
+            }
+            $body.append(tr + tr_end);
+            $th.append('<th>价格</th><th>库存</th><th>操作</th>');
+        },
+        error : function () {
+            alert("错误");
+        }
+    });
+})
+
+function appendSKU(obj) {
+    var $tr = $(obj).parents("tr");
+    var newLine = "<tr>";
+    var sku = "";
+
+    // 选项属性
+    $tr.find("select").each(function(){
+        var $op = $(this).find("option:selected");
+        sku += $op.val() + ";";
+        newLine += "<input type='hidden' name='detailCode' value='" + $op.val() + "'>"
+        newLine += "<td>" + $op.text() + "</td>";
+	});
+
+	// 库存和价格
+    var price = $("#price").val();
+    newLine += "<td><input name='price' type='hidden' value='" + price+ "'/>" + price + "</td>";
+    newLine += "<td><input name='stock' type='hidden' value='" + $("#stock").val()+ "'/>" + $("#stock").val() + "</td>";
+
+    // 更新最低价格
+	if ($("#lowest").val() == 0 || price < $("#lowest").val()){
+		$("#lowest").val(price);
+	}
+
+	if (sku.length > 0 && sku.charAt(sku.length - 1) == ';') {
+		sku = sku.substring(0, sku.length - 1);
+	}
+    var sku_input = '<input name="sku" type="hidden" value="' + sku + '"/>';
+    newLine += '<td><button class="btn btn-danger" type="button" onclick="remove(this)">取消</button></td>' + sku_input + '</tr>';
+    $("#stock_table_body").append(newLine);
+}
+
+function remove(obj) {
+	$(obj).parents("tr").remove();
+}
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

@@ -1,0 +1,138 @@
+﻿<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+	<meta th:replace="/admin/head::meta">
+<title>分类管理</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 商品管理 <span class="c-gray en">&gt;</span> 属性管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div class="cl pd-5 bg-1 bk-gray">
+		<span class="l">
+			<a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+			<a href="javascript:;" onclick="propertyAdd('添加属性','propertyAdd.html','600','380')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加属性</a>
+		</span>
+	</div>
+	<div class="mt-20">
+		<table id="property_table" class="table table-border table-bordered table-bg">
+		</table>
+	</div>
+</div>
+
+<script th:replace="/admin/footer::common"></script>
+
+<!--<script type="text/javascript" th:src="@{/lib/laypage/1.2/laypage.js}"></script>-->
+<script th:replace="/admin/footer::date"></script>
+<script th:replace="/admin/footer::datatables"></script>
+
+<script type="text/javascript">
+var dataTable = $('#property_table').DataTable({
+    "order": [],
+    searching: false,
+    lengthMenu: [5, 10, 20, 30, 50],
+    serverSide: true,
+	// 手动调用异步查询
+    ajax: function(data, callback, settings) {
+        console.log(data);
+        $.ajax({
+            type: "GET",
+            url: BASE_URL + "/manager/listProperty.json",
+            cache : false,  //禁用缓存
+            data: {
+                "begin" : data.start,
+				"pageSize" : data.length
+			},
+            dataType: "json",
+            success: function(result) {
+                var tableData = {};
+                tableData.recordsTotal = result.data.totalElements;
+                tableData.recordsFiltered = result.data.totalElements;
+                tableData.data = result.data.content;
+
+				callback(tableData);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+            }
+        });
+	},
+	aoColumns: [
+		{
+			"sTitle": '商品类型id',
+			"sClass": "text-center",
+			"mDataProp": "typeId",
+			"orderable": false,
+			"searchable": false,
+			"orderable" : false
+		},
+        {
+            "sTitle": '顺序',
+            "sClass": "text-center",
+            "mDataProp": "seq",
+            "orderable": false,
+            "searchable": false
+        },
+        {
+            "sTitle": 'code值',
+            "sClass": "text-center",
+            "mDataProp": "code",
+            "orderable": false,
+            "searchable": false
+        },
+        {
+            "sTitle": '属性名',
+            "sClass": "text-center",
+            "mDataProp": "name",
+            "orderable": false,
+            "searchable": false
+        },
+        {
+            "sTitle": '属性值',
+            "sClass": "text-center",
+            "mDataProp": null,
+            "orderable": false,
+            "searchable": false,
+            "render":function(data) {
+                var details = data.details;
+                var values = "";
+                for (var i = 0; i < details.length; i++) {
+					values += details[i].val + ",";
+				}
+				return values.substring(0, values.length - 1);
+            }
+        },
+        {
+            "sTitle": '必要属性',
+            "sClass": "text-center",
+            "mDataProp": "required",
+            "orderable": false,
+            "searchable": false
+        },
+        {
+            "sTitle": '操作',
+            "sClass": "text-center",
+            "mDataProp": null,
+            "orderable": false,
+            "searchable": false,
+			"render":function(data) {
+                return '<a onclick="propertyEdit(\''+ data.id +'\')" class="btn btn-link size-MINI">添加属性值</a>';
+			}
+        }
+	]
+});
+
+function propertyAdd(title,url,w,h){
+    layer_show(title,url,w,h);
+}
+
+function propertyEdit(id) {
+    var url = BASE_URL + "/manager/propertyDetailAdd.html?id=" + id;
+	layer_show("添加属性值", url, 600, 280);
+}
+
+function reloadData() {
+    dataTable.ajax.reload();
+}
+</script>
+</body>
+</html>

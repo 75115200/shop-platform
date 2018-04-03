@@ -17,6 +17,11 @@ public interface Constant {
     String SYS_FILE_AUTH_KEY = "token";
 
     /**
+     * 用户会话
+     */
+    String USER_SESSION = "user";
+
+    /**
      * 默认编码
      */
     Charset UTF8 = Charset.forName("utf-8");

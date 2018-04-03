@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<link>
+    <meta charset="UTF-8"></meta>
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <title>尚裳</title>
+    <link th:replace="dist">
+    <link rel="stylesheet" th:href="@{/css/index.css}"></link>
+    <link rel="stylesheet" th:href="@{/css/checkout.css}"></link>
+</head>
+<body>
+<div th:replace="header"></div>
+<!-- 类别导航 -->
+<div class="category_nav">
+    <div class="container">
+        <ul>
+            <li><a>首页</a></li>
+            <li><a>购物车</a></li>
+        </ul>
+    </div>
+</div>
+<div class="checkout">
+    <div class="container">
+        <form id="cart_form" method="post" th:action="@{/user/payment.html}">
+            <h3>您的购物车中共包含<span th:text="${#lists.size(carts)}"></span>件商品</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <td><input id="check_all" type="checkbox"></td>
+                        <th>No.</th>
+                        <th>商品</th>
+                        <th>商品规格</th>
+                        <th>单价</th>
+                        <th>数量</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="cart_list">
+                    <tr th:each="cart,status:${carts}">
+                        <td><input name="cartIds" type="checkbox" th:value="${cart.cartId}"></td>
+                        <td th:text="${status.count}">1</td>
+                        <td>
+                            <img th:src="${FILE_URL} + ${cart.itemPic}" class="img-responsive center-block">
+                            <p th:text="${cart.itemName}"></p>
+                        </td>
+                        <td>
+                            <p th:each="prop:${cart.properties}">
+                                <th:block th:text="${prop.name} + ':'"></th:block>
+                                <span th:each="d:${prop.details}" th:text="${d.val}"></span>
+                            </p>
+                        </td>
+                        <td>¥<span th:text="${cart.price}" class="price">500.00</span></td>
+                        <td><input style="width: 42px" min="1" type="number" name="num" th:value="${cart.num}"></td>
+                        <td><i class="glyphicon glyphicon-remove" th:data-id="${cart.cartId}"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="checkout_bottom_left">
+                <button class="simple_btn" type="submit" id="checkout_btn">结算</button>
+                <h4>
+                    共¥<span id="total_price">¥0.00</span>
+                </h4>
+            </div>
+            <div class="checkout_bottom_right">
+                <a th:href="@{/public/home.html}">
+                    <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+                    继续购物
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#checkout_btn").click(function() {
+        if ($("#cart_list input:checkbox:checked").length == 0) {
+            layer.msg("请先选择要支付的商品");
+            return false;
+        }
+
+        return true;
+    });
+
+    $("#check_all").click(function() {
+        var checkAll = this.checked;
+        $("#cart_list input[type='checkbox']").each(function() {
+            this.checked = checkAll;
+        })
+        recount();
+    });
+
+    $("#cart_list input[type='checkbox']").change(function() {
+        var checkAll = $("#check_all")[0];
+        if (checkAll.checked) {
+            checkAll.checked = false;
+        }
+        recount();
+    });
+
+    $("input[name='num']").change(function() {
+        recount();
+    });
+
+    function recount() {
+        var total = 0;
+        $("#cart_list input:checkbox:checked").each(function() {
+            var $tr = $(this).parent().parent();
+            var price = $tr.find(".price").html();
+            var num = $tr.find("input[name='num']").val();
+            total += price * num;
+        })
+        $("#total_price").html(total);
+    }
+
+    $("input[name='num']").change(function() {
+        var id = $(this).parent().parent().find("i").data("id");
+        $.ajax ({
+            url : BASE_URL + '/user/updateCartNum.json',
+            type : 'post',
+            data : {
+                "id":id,
+                "num":$(this).val()
+            },
+            dataType : 'json'
+        });
+    });
+
+    $(".glyphicon-remove").click(function() {
+        var cartId = $(this).data("id");
+        layer.confirm('您确定将该商品从购物车移除？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax ({
+                url : BASE_URL + '/user/removeFromCart.json',
+                type : 'post',
+                data : {
+                    "cartId":cartId
+                },
+                dataType : 'json',
+                success : function (res) {
+                    layer.msg('操作成功', {icon: 1});
+                    setTimeout(location.reload(), 500);
+                },
+                error : function () {
+                    layer.msg('的确很重要', {icon: 2});
+                }
+            });
+        });
+    });
+
+</script>
+</body>
+</html>

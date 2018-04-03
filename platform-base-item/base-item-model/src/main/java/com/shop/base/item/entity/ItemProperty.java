@@ -2,6 +2,7 @@ package com.shop.base.item.entity;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,12 @@ public class ItemProperty {
      * 主键id
      */
     private String id;
+
+    /**
+     * 属性标识
+     */
+    @Pattern(regexp = "[a-zA-Z0-9]{6}", message = "{property.code}")
+    private String code;
 
     /**
      * 属性序号
@@ -112,5 +119,13 @@ public class ItemProperty {
 
     public void setRequired(int required) {
         this.required = required;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

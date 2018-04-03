@@ -31,6 +31,12 @@
         </dependency>
 
         <dependency>
+            <groupId>alipay</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
@@ -46,12 +52,18 @@
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+        </dependency>
+
         <!-- 业务服务依赖 -->
         <dependency>
             <groupId>zzs</groupId>
             <artifactId>platform-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>zzs</groupId>
             <artifactId>base-user-provider</artifactId>
@@ -60,6 +72,11 @@
         <dependency>
             <groupId>zzs</groupId>
             <artifactId>base-item-provider</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>zzs</groupId>
+            <artifactId>base-order-provider</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

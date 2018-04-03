@@ -1,10 +1,19 @@
 package com.shop.base.item.entity;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
 
 /**
  * 商品基础数据
@@ -19,11 +28,14 @@ public class Item {
     /**
      * 产品编号
      */
+    @Pattern(regexp = "[a-zA-Z0-9]{13}", message = "{item.no}")
     private String no;
 
     /**
      * 产品名称
      */
+    @NotNull(message = "{item.name}")
+    @Size(max = 22, message = "{item.size}")
     private String name;
 
     /**
@@ -54,11 +66,17 @@ public class Item {
     /**
      * 库存信息
      */
-    private ItemSku sku;
+    private List<ItemSku> sku;
+
+    /**
+     * 商品属性值code
+     */
+    private Set<String> detailCodes;
 
     /**
      * 上架时间
      */
+    @JsonProperty(access = READ_ONLY)
     private Date publishDate;
 
     public String getId() {
@@ -117,11 +135,11 @@ public class Item {
         this.files = files;
     }
 
-    public ItemSku getSku() {
+    public List<ItemSku> getSku() {
         return sku;
     }
 
-    public void setSku(ItemSku sku) {
+    public void setSku(List<ItemSku> sku) {
         this.sku = sku;
     }
 
@@ -139,5 +157,13 @@ public class Item {
 
     public void setPublishDate(Date publishDate) {
         this.publishDate = publishDate;
+    }
+
+    public Set<String> getDetailCodes() {
+        return detailCodes;
+    }
+
+    public void setDetailCodes(Set<String> detailCodes) {
+        this.detailCodes = detailCodes;
     }
 }

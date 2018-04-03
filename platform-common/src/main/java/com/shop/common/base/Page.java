@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * 公共Page
+ * 注意:pageNo从0开始，为了和spring 进行对应
  */
 public class Page<T> {
     /**
@@ -42,6 +43,8 @@ public class Page<T> {
     private Sort sort;
 
     public Page() {
+        this.pageNo = 1;
+        this.pageSize = DEFAULT_PAGE_SIZE;
     }
 
     public Page(int pageNo) {
@@ -51,6 +54,16 @@ public class Page<T> {
     public Page(int pageNo, int pageSize) {
         this.pageNo = pageNo;
         this.pageSize = pageSize;
+    }
+
+    public static Page createByBeginAndSize(int begin, int pageSize) {
+        int temp = begin/pageSize;
+        int pageNo = begin % pageSize > 0 ? temp + 1 : temp;
+
+        Page page = new Page();
+        page.setPageNo(pageNo);
+        page.setPageSize(pageSize);
+        return page;
     }
 
     public int getPageNo() {

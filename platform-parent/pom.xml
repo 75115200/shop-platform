@@ -19,6 +19,8 @@
         <mybatis.version>3.4.5</mybatis.version>
         <netty.version>4.1.12.Final</netty.version>
         <project.version>1.0</project.version>
+        <thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
+        <thymeleaf-layout-dialect.version>2.0.0</thymeleaf-layout-dialect.version>
     </properties>
 
     <!-- 统一版本管理 -->
@@ -61,6 +63,12 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>22.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-spring</artifactId>
+                <version>1.4.0</version>
             </dependency>
 
             <!-- 单元测依赖 -->

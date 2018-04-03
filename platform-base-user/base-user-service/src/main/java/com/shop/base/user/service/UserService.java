@@ -1,6 +1,10 @@
 package com.shop.base.user.service;
 
 import com.shop.base.user.entity.BaseUser;
+import com.shop.base.user.entity.BaseUserRole;
+import com.shop.common.base.Page;
+
+import java.util.List;
 
 /**
  * 基础：用户服务接口
@@ -21,4 +25,15 @@ public interface UserService {
      * @return BaseUser
      */
     BaseUser login(String account, String password);
+
+//    /**
+//     * 列出用户
+//     * @param page
+//     * @return
+//     */
+//    List<BaseUser> listUser(Page page);
+
+//    List<BaseUserRole> addUserRole();
+
+//    List<BaseUser> listUserByFilter(BaseUser user);
 }

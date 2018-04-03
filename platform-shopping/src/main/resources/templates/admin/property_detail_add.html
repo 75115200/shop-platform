@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta th:replace="admin/head::meta">
+    <title>添加属性</title>
+    <style>
+        .form-horizontal .form-label {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+<article class="page-container">
+    <form class="form form-horizontal" id="form_property_add">
+        <input type="hidden" name="id" th:value="${property.id}">
+        <div class="row cl">
+            <label class="form-label col-xs-3 col-sm-3"><span class="c-red">*</span>属性名：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" disabled th:value="${property.name}" value="" placeholder="属性名称...">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 col-sm-3">已有参数：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <p class=""><th:block th:each="d:${property.details}" th:text="${d.val}+' '"></th:block></p>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 col-sm-3"><span class="c-red">*</span>属性参数：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="大码|中码|小码" id="val"
+                       name="val">
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-3 col-sm-offset-3">
+                <input class="btn btn-primary radius" type="button" onclick="addPropertyDetail()" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+<script th:replace="admin/footer::common"></script>
+<script type="text/javascript">
+    function addPropertyDetail() {
+        $.ajax ({
+            url : BASE_URL + '/manager/addPropertyDetail.json',
+            type : 'post',
+            data : $("#form_property_add").serialize(),
+            dataType : 'json',
+            success : function (res) {
+                if (res.status == 1) {
+                    $.Huimodalalert('添加成功',1500);
+                    setTimeout(function() {
+                        window.parent.reloadData();
+                        layer_close();
+                    },1000);
+                } else {
+                    $.Huimodalalert(res.message,1500);
+                }
+            },
+            error : function () {
+                $.Huimodalalert('连接服务器错误',1500);
+            }
+        });
+    }
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

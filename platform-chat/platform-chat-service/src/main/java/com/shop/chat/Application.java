@@ -9,11 +9,11 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 /**
- * spring boot启动配置
+ * 启动配置
  */
 public class Application {
     public static void main(String[] args) throws InterruptedException {
-        int inetPort = 10086;
+        int inetPort = 10088;
 
         EventLoopGroup boss = new NioEventLoopGroup(1);
         EventLoopGroup worker = new NioEventLoopGroup(10);

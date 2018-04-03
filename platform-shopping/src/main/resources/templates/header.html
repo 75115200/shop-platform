@@ -15,14 +15,14 @@
                         <div class="tab-content">
                             <form class="form-horizontal tab-pane active" id="login_form">
                                 <input class="normal_input" name="account" placeholder="请输入用户名">
-                                <input class="normal_input" name="password" placeholder="请输入密码">
+                                <input class="normal_input" type="password" name="password" placeholder="请输入密码">
                                 <input type="button" id="login_btn" class="login_btn" value="登录">
                             </form>
                             <form class="form-horizontal tab-pane" id="reg_form">
                                 <input class="normal_input" name="username" placeholder="请输入用户名">
-                                <input class="normal_input" name="password" placeholder="请输入密码">
+                                <input class="normal_input" type="password" name="password" placeholder="请输入密码">
                                 <input class="normal_input" name="email" placeholder="请输入邮箱">
-                                <input class="normal_input" name="phone" placeholder="请输入电话">
+                                <input class="normal_input" name="phone" maxlength="13" placeholder="请输入电话">
                                 <input type="button" id="reg_btn" class="login_btn" value="注册">
                             </form>
                         </div>
@@ -36,7 +36,10 @@
 <div class="container header">
     <div class="row">
         <div class="col-md-2 col-sm-2">
-            <a href="#" data-toggle="modal" class="header_login_icon" data-target="#login_modal"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
+            <a href="#" data-toggle="modal" class="header_login_icon" data-target="#login_modal" th:if="${session.user} == null">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            </a>
+            <a href="" th:if="${session.user}">个人中心</a>
         </div>
         <div class="header_center col-md-8 col-sm-8">
             <h1>
@@ -47,11 +50,10 @@
             </h1>
         </div>
         <div class="header_cart col-md-2 col-sm-2">
-            <a href="">
-                <span>¥155555.0</span>
+            <a onclick="cart(this)">
                 <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
-            </a><br/>
-            <span>共30件商品</span>
+                购物车<span id="cart_sum" th:text="0"></span>件
+            </a>
         </div>
     </div>
 </div>
@@ -63,7 +65,7 @@
                 <a th:href="@{/public/home.html}">首页</a>
             </li>
             <li>
-                <a th:href="@{/public/category.html}">商品类别</a>
+                <a th:href="@{/public/category.html}">全部商品</a>
             </li>
             <li class="active">
                 <a th:href="@{/public/home.html}">热门活动</a>
@@ -106,39 +108,106 @@
     </a>
 </div>
 <script th:src="@{/js/bootstrap.js}"></script>
+<script th:inline="javascript">
+    var logined = [[${session.user != null}]];
+</script>
 <script>
+
     $('#banner').carousel({
         interval: 3500
     });
 
+    $(function() {
+        if (logined) {
+            $.ajax ({
+                url : BASE_URL + '/user/getCartCount.json',
+                type : 'get',
+                dataType : 'json',
+                success : function (res) {
+                    if (res.status == 1) {
+                        $("#cart_sum").html(res.data);
+                    }
+                },
+                error : function () {
+                }
+            });
+        }
+    });
+
     $("#reg_btn").click(function() {
+        var loader = layer.load(1, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+
         $.ajax ({
-            url : '/user/register.json',
+            url : BASE_URL + '/public/register.json',
             type : 'post',
             data : $("#reg_form").serialize(),
             dataType : 'json',
             success : function (res) {
-                alert(res);
+                if (res.status == 0) {
+                    layer.msg(res.message);
+                } else {
+                    layer.msg("注册成功");
+                    setTimeout(function() {
+                        location.href = BASE_URL + "/public/home.html";
+                    }, 1000);
+                }
+
+                layer.close(loader);
             },
             error : function () {
-                alert("错误");
+                layer.msg("连接服务器错误");
+                layer.close(loader);
             }
         });
     });
 
     $("#login_btn").click(function() {
+        var loader = layer.load(1, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
         $.ajax ({
-            url : '/user/login.json',
+            url : BASE_URL + '/public/login.json',
             type : 'post',
             data : $("#login_form").serialize(),
             dataType : 'json',
             success : function (res) {
-                alert(res);
+                if (res.status == 0) {
+                    layer.msg(res.message);
+                } else {
+                    layer.msg("登录成功！");
+                    setTimeout(function() {
+                        location.href = BASE_URL + "/public/home.html";
+                    }, 1000);
+                }
+                layer.close(loader);
             },
             error : function () {
-                alert("错误");
+                layer.msg("连接服务器错误");
+                layer.close(loader);
             }
         });
     });
+
+    function addCartSum() {
+        var $cartSum = $("#cart_sum");
+        $cartSum.html(parseInt($cartSum.html()) + 1);
+    }
+
+    function isLogined() {
+        if (!logined) {
+            $("#login_modal").modal("show");
+            return false;
+        }
+        return true;
+    }
+
+    function cart() {
+        if (isLogined()) {
+            location.href = BASE_URL + "/user/cart.html";
+        }
+    }
+
 </script>
 

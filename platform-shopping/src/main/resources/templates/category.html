@@ -27,18 +27,18 @@
     <div class="category_filter">
         <p th:if="${not #lists.isEmpty(types)}">
             商品类型:
-            <a th:each="t:${types}" th:href="@{/public/category.html(typeId=${t.id})}" th:text="${t.type}" th:data="${t.id}" type="checkbox">
+            <a th:each="t:${types}" th:href="@{/public/category.html(typeId=${t.id})}" th:text="${t.type}" th:data="${t.id}" type="checkbox"/>
         </p>
 
         <p th:each="prop : ${properties}">
             <span th:text="${prop.getName()}"></span>
-            <input th:each="d : ${prop.details}" th:text="${d.val}" th:value="${d.code}" name="properties" type="checkbox">
+            <input th:each="d : ${prop.details}" th:text="${d.val}" th:value="${d.code}" name="detailCodes" type="checkbox">
         </p>
     </div>
-    <div class="filter_text">
-        <input type="text" name="name" placeholder="过滤文字" id="filter_name" class="">
-        <button type="button" id="query_btn">提交</button>
-    </div>
+    <p class="filter_text">
+        <input type="text" name="name" placeholder="请输入要搜索的词" id="filter_name" class="">
+        <button type="button" class="simple_btn small_btn" id="query_btn">确定</button>
+    </p>
 </div>
 <div class="item_list">
     <div class="container">
@@ -56,20 +56,40 @@
                 <!--<a class="simple_btn">添加到购物车</a>-->
             <!--</div>-->
         </div>
+        <h2 class="empty_tip">没有找到与"<span class="c_orange" id="tip_word">呵呵呵</span>"相关的
+            <span class="c_orange" th:if="${type}" th:text="${type.type}">鞋子</span>
+            <span class="c_orange" th:unless="${type}">商品</span>
+        </h2>
     </div>
 </div>
 
 <script type="text/javascript">
     function callbackItem(data) {
-        var items = data.response.docs;
         $("#main_item").empty();
+        if (data.response.numFound == 0) {
+            $("#tip_word").html($("#filter_name").val());
+            $(".empty_tip").show();
+            return ;
+        }
+        var items = data.response.docs;
+        $(".empty_tip").hide();
         for (var i = 0; i < items.length; i++) {
-            var tip = '<div class="tip"><h5>' + Math.ceil(items[i].lowest/items[i].originalPrice * 10) + '折</h5></div>';
-            var img = '<a href="' + BASE_URL + "/public/detail.html?itemId=" + items[i]._id + '"><img src="' + FILE_URL + items[i].files + '" class="img-responsive center-block"></a>';
-            var name = '<h5>' + items[i].name + '</h5>';
+            var discount = Math.ceil(items[i].lowest/items[i].originalPrice * 10);
+            var tip = '';
+            if (discount < 10) {
+                tip = '<div class="tip"><h5>' + discount + '折</h5></div>';
+            }
+
+            var img = '<a href="' + BASE_URL + "/public/detail.html?itemId=" + items[i]._id + '"><img src="' + FILE_URL + items[i]['files.0'] + '" class="img-responsive center-block"></a>';
+
+            var itemName = items[i].name;
+            var highlighting = data.highlighting[items[i]._id].name;
+            if (highlighting) {
+                itemName = highlighting;
+            }
+            var name = '<h5>' + itemName + '</h5>';
             var price = '<p><span class="old_price">¥' + items[i].originalPrice + '</span><span>¥' + items[i].lowest + '</span></p>';
-            var btn = '<a class="simple_btn">添加到购物车</a>';
-            var div = '<div class="col-md-3 col-sm-6 item_div">' + tip + img + name + price + btn + '</div>';
+            var div = '<div class="col-md-3 col-sm-6 item_div">' + tip + img + name + price + '</div>';
             $("#main_item").append(div);
         }
     }
@@ -81,25 +101,44 @@
         if (name != "") {
             param = "name:" + name + "\n";
         }
-        // 商品属性参数
-        $("input[name=properties]:checked").each(function() {
-            var prop = "properties:" + this.value + "\n";
-            param += prop;
-        });
 
-        var data = {};
+        var form = new FormData();
+        // 类型过滤
+        var data = "";
         var typeId = $("#typeId").attr("data");
         if (typeId && typeId != "") {
-            data['fq'] = "typeId:" + typeId;
+            // data += $.param("fq", "typeId:" + typeId);
+            data += $.param({"fq":"typeId:" + typeId}) + "&";
         }
+
+        // 商品属性参数
+        var $inputs = $("input[name=detailCodes]:checked");
+        if ($inputs.length > 0 ) {
+            var detailCodesFq = "detailCodes:(";
+            $inputs.each(function(i, input) {
+                detailCodesFq += escapeQueryChars(this.value);
+                if ($inputs.length-1 != i) {
+                    detailCodesFq += " OR ";
+                }
+            });
+            detailCodesFq += ")";
+
+            data += $.param({"fq": detailCodesFq}) + "&";
+        }
+
+        data += $.param({"hl.fl":"name", "hl": "true", "hl.simple.pre":"<b>", "hl.simple.post":"</b>"}) + "&";
+
         if (param != "") {
-            data["q"] = param;
+            // data["q"] = param;
+            data += $.param({"q" : param});
         } else {
-            data["q"] = "*:*";
+            // data["q"] = "*:*";
+            data += $.param({"q" : "*:*"});
         }
         $.ajax({
             url: SOLR_URL,
-            data : data ,
+            type : 'GET',
+            "data" : data ,
             success : function(data) {
                 callbackItem(data);
             },
@@ -116,5 +155,25 @@
         queryItem();
     })
 
+    /*
+     * 转义字符查询
+     */
+    var escapeQueryChars = function (q){
+        var result = '';
+        //如果字符串q 不为空(null,未定义,空)
+        if (q !== null && q !== undefined && q !== '' && q !=="") {
+            for(var i=0;i < q.length;i++){
+                var c = q.charAt(i);
+                if (c == '\\' || c == '+' || c == '-' || c == '!'  || c == '(' || c == ')' || c == ':'
+                    || c == '^' || c == '[' || c == ']' || c == '\"' || c == '{' || c == '}' || c == '~'
+                    || c == '*' || c == '?' || c == '|' || c == '&'  || c == ';' || c == '/'
+                    || c == ' ') {
+                    result = result+ '\\';
+                }
+                result = result+ c;
+            }
+        }
+        return result;
+    };
 </script>
 </body>

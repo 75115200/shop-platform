@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta th:replace="admin/head::meta">
+    <title>添加属性</title>
+    <style>
+        .form-horizontal .form-label {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+<article class="page-container">
+    <form class="form form-horizontal" id="form_property_add">
+        <div class="row cl">
+            <label class="form-label col-xs-3 col-sm-3"><span class="c-red">*</span>商品类型：</label>
+            <div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
+			<select class="select" name="typeId" size="1">
+				<option value="0" th:each="t:${types}" th:value="${t.id}" th:text="${t.type}">衣服</option>
+			</select>
+			</span>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-3 col-sm-3"><span class="c-red">*</span>属性标识：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" maxlength="6" placeholder="由6位数字，字母组成" id="code" name="code">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 col-sm-3"><span class="c-red">*</span>属性名：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="属性名称..." id="name" name="name">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 col-sm-3"><span class="c-red">*</span>属性参数：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="大码|中码|小码" id="val"
+                       name="val">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 col-sm-3"><span class="c-red">*</span>顺序：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="number" class="input-text" value=""  id="seq" name="seq">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 col-sm-3"><span class="c-red">*</span>性别：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input type="radio" name="required" id="required-1" checked value="1">
+                    <label for="required-1">规格属性</label>
+                </div>
+                <div class="radio-box">
+                    <input type="radio" id="required-2" name="required" value="0">
+                    <label for="required-2">商品属性</label>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-3 col-sm-offset-3">
+                <input class="btn btn-primary radius" type="button" onclick="addProperty()" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+<script th:replace="admin/footer::common"></script>
+<script type="text/javascript">
+    function addProperty() {
+        $.ajax ({
+            url : BASE_URL + '/manager/addProperty.json',
+            type : 'post',
+            data : $("#form_property_add").serialize(),
+            dataType : 'json',
+            success : function (res) {
+                if (res.status == 1) {
+                    $.Huimodalalert('添加成功',1500);
+                    window.parent.reloadData();
+                    layer_close();
+                } else {
+                    $.Huimodalalert(res.message,1500);
+                }
+            },
+            error : function () {
+                $.Huimodalalert('连接服务器错误',1500);
+            }
+        });
+    }
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

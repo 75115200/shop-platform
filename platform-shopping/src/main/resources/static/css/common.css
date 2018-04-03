@@ -140,6 +140,13 @@ button {
     text-decoration: none;
     cursor: pointer;
 }
+.simple_btn:disabled {
+    background-color: #e3e3e3;
+}
+
+.small_btn {
+    padding: .2em 1.5em;
+}
 
 .old_price {
     color: #999;

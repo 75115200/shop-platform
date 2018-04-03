@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +47,8 @@ public class FileController {
      */
     @RequestMapping("/upload.json")
     @ResponseBody
-    public BaseResult upload(@RequestParam("file") MultipartFile[] file, String callback, HttpServletRequest request) {
+    @CrossOrigin
+    public BaseResult upload(@RequestParam("file") MultipartFile[] file, @RequestParam(required = true) String callback, HttpServletRequest request) {
         if (file == null) {
             return BaseResult.fail("缺乏上传文件");
         }
@@ -76,12 +75,19 @@ public class FileController {
             }
 
             // 回调
-            HttpFileUtil.callback(callback, request.getParameterMap(), fileInfos);
+            result = HttpFileUtil.callback(callback, request.getParameterMap(), fileInfos);
         } catch (IOException e) {
             LOGGER.error("上传文件失败");
             return BaseResult.fail("上传文件失败，IOE异常");
         }
         return BaseResult.success(result);
+    }
+
+    @RequestMapping(value = "/upload.json", method = RequestMethod.OPTIONS)
+    @ResponseBody
+    @CrossOrigin
+    public BaseResult uploadOptions() {
+        return BaseResult.success();
     }
 
     @RequestMapping("/download")
