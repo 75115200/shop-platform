@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8"></meta>
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <title>尚裳</title>
+    <link th:replace="dist">
+    <link rel="stylesheet" th:href="@{/css/dataTables.bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/ucenter.css}">
+</head>
+<body>
+    <div th:replace="header"></div>
+    <div class="main">
+        <div class="main_left_nav">
+            <ul class="nav nav-stacked">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="#" target="main_right_iframe" th:href="@{/user/orderList.html}">我的订单</a></li>
+                <li><a href="#">收货地址</a></li>
+                <li><a href="#">个人资料</a></li>
+            </ul>
+        </div>
+        <div class="main_right">
+            <iframe th:src="@{/user/orderList.html}" id="main_right_iframe" name="main_right_iframe"></iframe>
+        </div>
+    </div>
+
+<script th:replace="/admin/footer::datatables"></script>
+</body>
+<script>
+    function autoFitIframe(iframe) {
+        var doc = iframe.contentDocument || iframe.contentWindow.document;
+        // 设置iframe宽度
+        iframe.style.width = '100%';
+
+        function update() {
+            var containerWidth = iframe.parentNode.offsetWidth;
+            // 在iphone、ipad等移动浏览器中，为iframe设置width和height样式起不了作用
+            // iframe的高宽由其内容决定，故设置iframe中body的宽度来限制iframe高宽
+            doc.body.style.width =  + 'px';
+            doc.body.style.padding = '0';
+            doc.body.style.margin = '0';
+            doc.body.style.border = 'none';
+
+            // 自适应iframe高度，确保没有纵向滚动条
+            // iphone、ipad等移动浏览会器忽略width/height自适应高度
+            // NOTE: 没有支持Quirks mode
+
+            // 确保scrollHeight是iframe所需的最小高度
+            iframe.style.height = '0';
+            iframe.style.height = Math.max(
+                // 其他浏览器
+                doc.body.scrollHeight,
+                // IE7
+                doc.documentElement.scrollHeight
+            ) + 'px';
+        }
+        if (doc.readyState === 'complete') {
+            update();
+        }
+
+        if (iframe.addEventListener) {
+            iframe.addEventListener('load', update, false);
+        }
+        else if (iframe.attachEvent) {
+            iframe.attachEvent('onload', update);
+        }
+    };
+
+    function resizeIframe() {
+        autoFitIframe($("#main_right_iframe")[0]);
+    }
+</script>
+</html>

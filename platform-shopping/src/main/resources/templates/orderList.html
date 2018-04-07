@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8"></meta>
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <title>尚裳</title>
+    <link th:replace="dist">
+    <link rel="stylesheet" th:href="@{/css/ucenter.css}">
+</head>
+<body>
+<h3>我的订单</h3>
+<div class="main_right_order">
+    <table id="order_table" class="table">
+        <tr>
+            <th width="320px">商品</th>
+            <th>单价</th>
+            <th>数量</th>
+            <th>实付款</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        <tbody valign="middle">
+        <tr class="table_order_label">
+            <td colspan="6">
+                <p class="table_order_num">
+                    <span>2018-04-06 23:59:59</span>
+                    <span>订单号:12356452121</span>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td class="table_order_item">
+                <img class="table_order_img" th:src="@{/img/20.jpg}" width="80" height="80">
+                <span class="table_order_name">帅气衬衫</span>
+                <span class="table_order_sku">颜色:白色</span>
+                <span class="table_order_sku">尺码:大码</span>
+            </td>
+            <td>666.0</td>
+            <td>1</td>
+            <td>666.0</td>
+            <td rowspan="2">已付款</td>
+            <td rowspan="2"><a>物流详情</a></td>
+        </tr>
+        <tr>
+            <td class="table_order_item">
+                <img class="table_order_img" th:src="@{/img/20.jpg}" width="80" height="80">
+                <span class="table_order_name">帅气衬衫</span>
+                <span class="table_order_sku">颜色:白色</span>
+                <span class="table_order_sku">尺码:大码</span>
+            </td>
+            <td>666.0</td>
+            <td>1</td>
+            <td>666.0</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    $(function() {
+        window.parent.resizeIframe();
+    })
+</script>
+</body>
+</html>

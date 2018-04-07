@@ -1,0 +1,66 @@
+.main {
+    width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.main_left_nav {
+    width: 120px;
+    text-align: center;
+    float: left;
+}
+
+.main_right {
+    margin-left: 20px;
+    width: 1000px;
+    float: left;
+}
+.main_right iframe{
+    border: 0;
+}
+
+.main_right_order tr th,td {
+    text-align: center;
+}
+.table > tbody > tr > td {
+    vertical-align: middle;
+    border: none;
+}
+
+.table_order_label {
+    background-color: #e8e7e7;
+    color: black;
+    border: 0;
+}
+.table_order_label td p{
+    text-align: left;
+    margin: 0;
+}
+
+.table_order_item {
+    text-align: left;
+}
+.table_order_num span{
+    margin-left: 10px;
+}
+
+.table_order_img {
+    float: left;
+    width: 80px;
+    height: 80px;
+}
+
+.table_order_name {
+    font-size: 16px;
+    width: 200px;
+    word-break: break-all;
+    float: left;
+    margin-left: 20px;
+}
+
+.table_order_sku {
+    font-size: 14px;
+    color: #9d9d9d;
+    float: left;
+    margin-left: 20px;
+}
