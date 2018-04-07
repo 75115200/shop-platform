@@ -1,7 +1,9 @@
 package com.shop.shopping.service;
 
 import com.shop.base.order.entity.Cart;
+import com.shop.base.order.entity.Order;
 import com.shop.shopping.model.CartDto;
+import com.shop.shopping.model.OrderForm;
 
 import java.util.List;
 
@@ -23,4 +25,12 @@ public interface ShoppingService {
      * @return
      */
     List<CartDto> showCart(String userId);
+    
+    /**
+     * 结算下单
+     * @param orderForm
+     * @param userId
+     * @return
+     */
+    Order checkout(OrderForm orderForm, String userId);
 }

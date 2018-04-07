@@ -25,23 +25,32 @@ import java.util.Map;
  */
 @Component
 public class Config {
-    private String key = "key";
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
+    /**
+     * 文件下载路径
+     */
+    public static final String FILE_URL = "http://localhost:10087/file/download?id=";
+    
+    /**
+     * 文件上传路径
+     */
+    public static final String FILE_UPLOAD_URL = "http://localhost:10087/file/upload.json";
+    
+    /**
+     * Solr服务器地址
+     */
+    public static final String SOLR_URL = "http://123.207.92.85:8983/solr/collection1/select?wt=json&indent=true&json.wrf=?";
+    
+    /**
+     * 设置thymeleaf的参数
+     * @param viewResolver
+     */
     @Resource
     private void configureThymeleafStaticVars(ThymeleafViewResolver viewResolver) {
         if(viewResolver != null) {
             Map<String, Object> vars = new HashMap<>();
-            vars.put("FILE_URL", "http://localhost:10087/file/download?id=");
-            vars.put("FILE_UPLOAD_URL", "http://localhost:10087/file/upload.json");
-            vars.put("SOLR_URL", "http://123.207.92.85:8983/solr/collection1/select?wt=json&indent=true&json.wrf=?");
+            vars.put("FILE_URL", FILE_URL);
+            vars.put("FILE_UPLOAD_URL", FILE_UPLOAD_URL);
+            vars.put("SOLR_URL", SOLR_URL);
 
             viewResolver.setStaticVariables(vars);
         }

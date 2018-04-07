@@ -53,3 +53,74 @@ i:hover{
 .checkout_bottom_left h3 {
     cursor: pointer;
 }
+
+.address_div {
+    display: none;
+    width: 700px;
+}
+
+.address {
+    background-color: #fafafa;
+    border: 1px solid #e1e1e1;
+    padding: 20px;
+    min-height: 160px;
+    width: 280px;
+    margin-top: 10px;
+    margin-left: 10px;
+    float: left;
+    cursor: pointer;
+    min-height: 180px;
+}
+.address p {
+    word-break: break-all;
+}
+.address_list {
+    list-style: none;
+}
+.address_op {
+    visibility: hidden;
+}
+.address_op button {
+    background-color: #ffffff;
+    border: 1px solid #e1e1e1;
+    width: 116px;
+    float: left;
+}
+.address:hover {
+    background-color: #e1e1e1;
+}
+.address:hover .address_op{
+    visibility: visible;
+}
+.address_op button:hover {
+    background-color: #e1e1e1;
+}
+.new_address {
+    background-color: #fafafa;
+    border: 1px solid #e1e1e1;
+    padding: 20px;
+    min-height: 180px;
+    width: 280px;
+    margin-top: 10px;
+    margin-left: 10px;
+    float: left;
+    cursor: pointer;
+    text-align: center;
+    padding-top: 60px;
+}
+.pay_btn {
+    clear: both;
+    padding-top: 36px;
+    padding-bottom: 20px;
+    text-align: center;
+}
+.address_choosed {
+    background-color: white;
+}
+
+.address_add {
+    width: 480px;
+    height: 360px;
+    padding: 10px;
+    display: none;
+}

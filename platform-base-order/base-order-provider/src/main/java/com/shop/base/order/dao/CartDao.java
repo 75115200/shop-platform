@@ -13,7 +13,7 @@ public interface CartDao extends PagingAndSortingRepository<Cart, String> {
 
     List<Cart> queryByUserId(String userId);
 
-    int deleteByIdAndUserId(String id, String userId);
-
     int countByUserId(String userId);
+    
+    int deleteByUserIdAndIdIn(String userId, String[] ids);
 }

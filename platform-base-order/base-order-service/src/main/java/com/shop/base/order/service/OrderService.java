@@ -1,9 +1,13 @@
 package com.shop.base.order.service;
 
 import com.shop.base.order.entity.Cart;
+import com.shop.base.order.entity.Order;
+import com.shop.common.base.Page;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 订单服务接口
@@ -26,11 +30,11 @@ public interface OrderService {
 
     /**
      * 从购物车中移除商品
-     * @param id
      * @param userId
+     * @param id
      * @return
      */
-    int removeCart(String id, String userId);
+    int removeCart(String userId, String... id);
 
     /**
      * 统计购物车中的商品数量
@@ -46,4 +50,35 @@ public interface OrderService {
      * @param userId
      */
     void updateCartNum(String id, int num, String userId);
+
+    /**
+     * 按照id集合查找购物车中的商品
+     * @param ids
+     * @return
+     */
+    List<Cart> findCart(Set<String> ids);
+    
+    /**
+     * 保存更新订单
+     * @param order
+     * @return
+     */
+    Order saveOrder(Order order);
+    
+    /**
+     * 更新订单状态
+     * @param orderNum
+     * @param status
+     * @return
+     */
+    int updateOrderStatus(String orderNum, int status);
+    
+    /**
+     * 列出用户订单
+     * 默认时间降序排序
+     * @param userId
+     * @param page
+     * @return
+     */
+    Page<Order> listOrderByUserId(String userId, Page page);
 }

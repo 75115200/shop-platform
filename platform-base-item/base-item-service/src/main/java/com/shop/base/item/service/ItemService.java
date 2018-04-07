@@ -2,6 +2,7 @@ package com.shop.base.item.service;
 
 import com.shop.base.item.entity.Item;
 import com.shop.base.item.entity.ItemProperty;
+import com.shop.base.item.entity.ItemSku;
 import com.shop.base.item.entity.ItemType;
 import com.shop.common.base.Page;
 
@@ -104,6 +105,35 @@ public interface ItemService {
      * @return
      */
     Page<Item> listItemByType(String typeId, Page page);
-
+    
+    /**
+     * 通过code查询对应的属性
+     * @param detailCode
+     * @return
+     */
     ItemProperty queryByDetailCode(String detailCode);
+    
+    /**
+     * 保存或更新商品
+     * @param item
+     * @return
+     */
+    Item saveItem(Item item);
+    
+    /**
+     * 扣减库存
+     * @param skuCode
+     * @param num
+     * @return
+     */
+    int reduceItemSku(String skuCode, int num);
+    
+    /**
+     * 查询库存信息
+     * 只返回item的id, name和sku
+     * @param itemId
+     * @param skuCode
+     * @return
+     */
+    Item queryNameAndSkuByItemIdAndSkuCode(String itemId, String skuCode);
 }

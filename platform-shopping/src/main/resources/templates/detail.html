@@ -176,11 +176,15 @@
                         if (res.status == 1) {
                             $("#stock").html(res.data.stock);
                             $("#price").html(res.data.price);
-                            $("#add_btn").removeAttr("disabled");
-                        } else {
-                            $("#stock").html(0);
-                            $("#add_btn")[0].disabled = "disabled";
+                            if (res.data.stock > 0) {
+                                $("#add_btn").removeAttr("disabled");
+                                return ;
+                            }
                         }
+
+                        // 失败或者库存为0都disabled
+                        $("#stock").html(0);
+                        $("#add_btn")[0].disabled = "disabled";
                     },
                     error : function () {
                         alert("错误");

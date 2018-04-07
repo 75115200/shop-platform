@@ -57,7 +57,7 @@
                 </tbody>
             </table>
             <div class="checkout_bottom_left">
-                <button class="simple_btn" type="submit" id="checkout_btn">结算</button>
+                <button class="simple_btn" type="submit" id="checkout_btn">下单</button>
                 <h4>
                     共¥<span id="total_price">¥0.00</span>
                 </h4>
@@ -72,47 +72,71 @@
     </div>
 </div>
 
+<div class="container address_div">
+    <h3>收货信息</h3>
+    <ul class="address_list">
+        <li class="col-md-3 new_address">
+            <span class="glyphicon glyphicon-plus"></span>
+            <p>使用新地址</p>
+        </li>
+    </ul>
+    <div class="pay_btn">
+        <button class="simple_btn" id="pay_btn">去付款</button>
+    </div>
+</div>
+
+<div class="address_add">
+    <h3>收货信息</h3>
+    <form id="address_add_form" class="form-horizontal text-center">
+        <input name="id" type="hidden">
+        <input class="normal_input" type="text" name="receiverName" placeholder="收件人姓名">
+        <input class="normal_input" type="text" name="receiverAddr" placeholder="收件人地址">
+        <input class="normal_input" type="text" name="receiverPhone" placeholder="收件人联系电话">
+        <div class="checkbox">
+            <label><input type="checkbox">设为默认地址</label>
+        </div>
+        <input type="button" id="address_add_btn" class="login_btn" value="确定"/>
+    </form>
+</div>
+
 <script type="text/javascript">
+    // 用于关闭address弹窗
+    var addressIndex;
+
     $("#checkout_btn").click(function() {
         if ($("#cart_list input:checkbox:checked").length == 0) {
-            layer.msg("请先选择要支付的商品");
+            layer.msg("请先选择要结算的商品");
             return false;
         }
-
-        return true;
+        reloadAddress();
+        layer.open({
+            type: 1,
+            title: "",
+            area: ['700px', '510px'], //宽高
+            shadeClose: true,
+            scrollbar: false,
+            content: $(".address_div")
+        });
+        return false;
     });
 
-    $("#check_all").click(function() {
-        var checkAll = this.checked;
-        $("#cart_list input[type='checkbox']").each(function() {
-            this.checked = checkAll;
-        })
-        recount();
-    });
+    function reloadAddress() {
+        $(".address").remove();
 
-    $("#cart_list input[type='checkbox']").change(function() {
-        var checkAll = $("#check_all")[0];
-        if (checkAll.checked) {
-            checkAll.checked = false;
-        }
-        recount();
-    });
-
-    $("input[name='num']").change(function() {
-        recount();
-    });
-
-    function recount() {
-        var total = 0;
-        $("#cart_list input:checkbox:checked").each(function() {
-            var $tr = $(this).parent().parent();
-            var price = $tr.find(".price").html();
-            var num = $tr.find("input[name='num']").val();
-            total += price * num;
-        })
-        $("#total_price").html(total);
+        // 加载地址
+        $.get(BASE_URL + "/user/listAddress.json", function(res) {
+            if (res.status == 1) {
+                var addressList = res.data;
+                for (var i = 0; i < addressList.length; i++) {
+                    appendAddress(addressList[i]);
+                }
+            } else {
+                layer.msg(res.msg);
+            }
+        });
     }
 
+    // 更新数量
     $("input[name='num']").change(function() {
         var id = $(this).parent().parent().find("i").data("id");
         $.ajax ({
@@ -126,6 +150,70 @@
         });
     });
 
+    $(".new_address").click(function() {
+        $("#address_add_form input[type='text']").val('');
+        address();
+    })
+
+    // 选中地址
+    function choosedAddr(obj) {
+        $(obj).siblings(".address_choosed").removeClass("address_choosed");
+        $(obj).addClass("address_choosed");
+    }
+
+    // 打开地址添加编辑页面
+    function address(obj) {
+        if (obj) {
+            var $attrs = $(obj).parent().siblings("p").children("span");
+            var id = $(obj).parent().data("id");
+            $("input[name='receiverName']").val($attrs[0].innerText);
+            $("input[name='receiverAddr']").val($attrs[1].innerText);
+            $("input[name='receiverPhone']").val($attrs[2].innerText);
+            $("input[name='id']").val(id);
+        }
+
+        addressIndex = layer.open({
+            type: 1,
+            title: "",
+            area: ['480px', '360px'], //宽高
+            shadeClose: true,
+            scrollbar: false,
+            content: $(".address_add")
+        });
+    }
+
+    // 全选
+    $("#check_all").click(function() {
+        var checkAll = this.checked;
+        $("#cart_list input[type='checkbox']").each(function() {
+            this.checked = checkAll;
+        })
+        recount();
+    });
+    // 单选
+    $("#cart_list input[type='checkbox']").change(function() {
+        var checkAll = $("#check_all")[0];
+        if (checkAll.checked) {
+            checkAll.checked = false;
+        }
+        recount();
+    });
+    $("input[name='num']").change(function() {
+        recount();
+    });
+    // 重新计算价格
+    function recount() {
+        var total = 0;
+        $("#cart_list input:checkbox:checked").each(function() {
+            var $tr = $(this).parent().parent();
+            var price = $tr.find(".price").html();
+            var num = $tr.find("input[name='num']").val();
+            total += price * num;
+        })
+        $("#total_price").html(total);
+    }
+
+    // 移除购物车
     $(".glyphicon-remove").click(function() {
         var cartId = $(this).data("id");
         layer.confirm('您确定将该商品从购物车移除？', {
@@ -143,12 +231,98 @@
                     setTimeout(location.reload(), 500);
                 },
                 error : function () {
-                    layer.msg('的确很重要', {icon: 2});
+                    layer.msg('连接服务器错误', {icon: 2});
                 }
             });
         });
     });
 
+    $("#address_add_btn").click(function() {
+        // 区分保存和编辑
+        var isNew = $("input[name='id']").val() == '';
+
+        var loader = layer.load(1, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+        $.ajax ({
+            url : BASE_URL + '/user/saveAddress.json',
+            type : 'post',
+            data : $("#address_add_form").serialize(),
+            dataType : 'json',
+            success : function (res) {
+                if (res.status == 1) {
+                    reloadAddress();
+                    layer.close(addressIndex);
+                } else {
+                    layer.msg(res.reason);
+                }
+                layer.close(loader);
+            },
+            error : function () {
+                layer.close(loader);
+            }
+        });
+    })
+
+    function delAddress(obj) {
+        var id = $(obj).parent().data("id");
+
+        var loader = layer.load(1, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+        $.post(BASE_URL + "/user/delAddress.json?id=" + id, function(res) {
+            if (res.status == 1) {
+                layer.msg("删除成功");
+                $(obj).parent().parent().remove();
+            } else {
+                layer.msg("删除失败:" + res.reason);
+            }
+            layer.close(loader);
+        });
+    }
+
+    function appendAddress(addr) {
+        var name = '<li class="address" onclick="choosedAddr(this)"><p>收货人:<span>' + addr.receiverName + '</span></p>'
+        var address = '<p>收货地址:<span>' + addr.receiverAddr + '</span></p>';
+        var phone = '<p>手机号码:<span>' + addr.receiverPhone + '</span></p>';
+        var op = '<div class="address_op" data-id="' + addr.id + '"><button onclick="address(this)">修改</button><button onclick="delAddress(this)">删除</button></div></li>'
+        $(".address_list li").last().before(name + address + phone + op);
+    }
+
+    $("#pay_btn").click(function(){
+        var addr = $(".address_choosed").children("p").children("span");
+        var cartIds = new Array();
+        var subjects = new Array();
+        $("input[name='cartIds']:checked").each(function() {
+            cartIds.push($(this).val());
+            subjects.push($($(this).parent().siblings()[1]).find("p").text());
+        })
+        var data = {
+            "receiverName" : addr[0].innerText,
+            "receiverAddr" : addr[1].innerText,
+            "receiverPhone" : addr[2].innerText,
+            "cartIds" : cartIds,
+            "subjects" : subjects
+        };
+        console.log(data);
+        formSubmit(data, "post", BASE_URL + "/user/payment.html");
+    });
+
+    function formSubmit(elementValue, method, url) {
+        var turnForm = document.createElement("form");
+        document.body.appendChild(turnForm);
+        turnForm.method = method;
+        turnForm.action = url;
+
+        for (var x in elementValue) {
+            var newElement = document.createElement("input");
+            newElement.setAttribute("type","hidden");
+            newElement.name = x;
+            newElement.value = elementValue[x];
+            turnForm.appendChild(newElement);
+        }
+        turnForm.submit();
+    }
 </script>
 </body>
 </html>
