@@ -16,5 +16,5 @@ import com.shop.base.order.entity.Order;
 public interface OrderDao extends PagingAndSortingRepository<Order, String>{
     Order queryByOrderNum(String orderNum);
  
-    Page<Order> queryByUid(String userId, Pageable pageable);
+    Page<Order> queryByUidOrderByCreateTimeDesc(String userId, Pageable pageable);
 }

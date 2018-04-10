@@ -49,6 +49,9 @@
     display: none;
 }
 
+.item_div h5 {
+    min-height: 30px;
+}
 .item_div h5 b {
     color: orange;
 }

@@ -23,6 +23,12 @@ public class OrderDetail {
     private String itemName;
     
     /**
+     * 商品图片
+     */
+    @Column(name = "item_img")
+    private String itemImg;
+    
+    /**
      * 商品sku 编码
      */
     @Column(name = "item_sku", nullable = false)
@@ -82,6 +88,14 @@ public class OrderDetail {
     
     public void setItemName(String itemName) {
         this.itemName = itemName;
+    }
+    
+    public String getItemImg() {
+        return itemImg;
+    }
+    
+    public void setItemImg(String itemImg) {
+        this.itemImg = itemImg;
     }
     
     public Order getOrder() {

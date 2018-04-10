@@ -81,4 +81,11 @@ public interface OrderService {
      * @return
      */
     Page<Order> listOrderByUserId(String userId, Page page);
+    
+    /**
+     * 根据订单id查询订单信息
+     * @param orderId
+     * @return
+     */
+    Order getOrderById(String orderId);
 }

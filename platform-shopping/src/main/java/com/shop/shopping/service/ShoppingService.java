@@ -3,7 +3,7 @@ package com.shop.shopping.service;
 import com.shop.base.order.entity.Cart;
 import com.shop.base.order.entity.Order;
 import com.shop.shopping.model.CartDto;
-import com.shop.shopping.model.OrderForm;
+import com.shop.shopping.param.OrderForm;
 
 import java.util.List;
 
@@ -33,4 +33,5 @@ public interface ShoppingService {
      * @return
      */
     Order checkout(OrderForm orderForm, String userId);
+    
 }

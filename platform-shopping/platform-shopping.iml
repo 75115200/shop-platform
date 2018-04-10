@@ -16,7 +16,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -28,13 +28,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="platform-common" />
-    <orderEntry type="module" module-name="base-item-provider" />
-    <orderEntry type="module" module-name="base-item-model" />
-    <orderEntry type="module" module-name="base-item-service" />
-    <orderEntry type="module" module-name="base-order-provider" />
-    <orderEntry type="module" module-name="base-order-service" />
-    <orderEntry type="module" module-name="base-order-model" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-thymeleaf:1.5.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:1.5.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:1.5.9.RELEASE" level="project" />
@@ -119,7 +112,7 @@
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.shiro:shiro-event:1.4.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.shiro:shiro-web:1.4.0" level="project" />
-    <orderEntry type="library" name="Maven: zzs:platform-common:1.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="platform-common" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-log4j:1.3.8.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.7.25" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.25" level="project" />
@@ -139,13 +132,15 @@
     <orderEntry type="library" name="Maven: org.jetbrains:annotations:16.0.1" level="project" />
     <orderEntry type="module" module-name="base-user-service" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.44" level="project" />
-    <orderEntry type="library" name="Maven: zzs:base-item-provider:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: zzs:base-item-model:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: zzs:base-item-service:1.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="base-item-provider" />
+    <orderEntry type="module" module-name="base-item-model" />
+    <orderEntry type="module" module-name="base-item-service" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-mongodb:1.10.10.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-expression:4.3.13.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:3.4.3" level="project" />
-    <orderEntry type="library" name="Maven: zzs:base-order-provider:1.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="base-order-provider" />
+    <orderEntry type="module" module-name="base-order-service" />
+    <orderEntry type="module" module-name="base-order-model" />
     <orderEntry type="module" module-name="platform-file-model" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.3.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.8" level="project" />

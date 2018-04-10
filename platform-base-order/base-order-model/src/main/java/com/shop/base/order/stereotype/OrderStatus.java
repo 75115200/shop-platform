@@ -38,4 +38,13 @@ public enum OrderStatus {
     public int getStatus() {
         return status;
     }
+    
+    public static OrderStatus valueOf(int status) {
+        for (OrderStatus s : OrderStatus.values()) {
+            if (s.getStatus() == status) {
+                return s;
+            }
+        }
+        return null;
+    }
 }

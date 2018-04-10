@@ -12,7 +12,7 @@ import com.shop.base.order.service.OrderService;
 import com.shop.base.order.stereotype.OrderStatus;
 import com.shop.common.base.BusinessException;
 import com.shop.shopping.model.CartDto;
-import com.shop.shopping.model.OrderForm;
+import com.shop.shopping.param.OrderForm;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,6 +124,7 @@ public class ShoppingServiceImpl implements ShoppingService {
             // 创建订单详情信息
             OrderDetail detail = new OrderDetail();
             detail.setItemName(item.getName());
+            detail.setItemImg(item.getFiles().get(0));
             detail.setNum(num);
             detail.setPrice(itemSku.getPrice());
             detail.setItemSku(cart.getSkuCode());
@@ -151,4 +152,5 @@ public class ShoppingServiceImpl implements ShoppingService {
         String userIdHashCode = String.valueOf(userId.hashCode());
         return timestamp.substring(timestamp.length() - 8) + userIdHashCode.substring(userIdHashCode.length() - 3);
     }
+    
 }

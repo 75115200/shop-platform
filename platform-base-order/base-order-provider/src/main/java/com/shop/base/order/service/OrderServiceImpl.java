@@ -96,12 +96,17 @@ public class OrderServiceImpl implements OrderService{
     
     @Override
     public Page<Order> listOrderByUserId(String userId, Page page) {
-        Pageable pageable = new PageRequest(page.getPageNo(), page.getPageSize());
-        org.springframework.data.domain.Page<Order> result = orderDao.queryByUid(userId, pageable);
+        Pageable pageable = new PageRequest(page.getPageNo() - 1, page.getPageSize());
+        org.springframework.data.domain.Page<Order> result = orderDao.queryByUidOrderByCreateTimeDesc(userId, pageable);
         
         page.setContent(result.getContent());
         page.setTotalElements(result.getTotalElements());
         page.setPageSum(result.getTotalPages());
         return page;
+    }
+    
+    @Override
+    public Order getOrderById(String orderId) {
+        return orderDao.findOne(orderId);
     }
 }

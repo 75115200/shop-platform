@@ -99,7 +99,7 @@ public class ItemServiceImpl implements ItemService {
     
     @Override
     public Page<ItemProperty> listPropertyByPage(Page page, String typeId) {
-        PageRequest pageRequest = new PageRequest(page.getPageNo(), page.getPageSize());
+        PageRequest pageRequest = new PageRequest(page.getPageNo() - 1, page.getPageSize());
         org.springframework.data.domain.Page result = null;
         if (StringUtils.isBlank(typeId)) {
             result = itemPropertyDao.findAll(pageRequest);
@@ -115,7 +115,7 @@ public class ItemServiceImpl implements ItemService {
     
     @Override
     public Page<Item> listItemByType(String typeId, Page page) {
-        PageRequest pageRequest = new PageRequest(page.getPageNo(), page.getPageSize());
+        PageRequest pageRequest = new PageRequest(page.getPageNo() - 1, page.getPageSize());
         org.springframework.data.domain.Page<Item> result = null;
         if (StringUtils.isBlank(typeId)) {
             result = itemDao.findAll(pageRequest);
@@ -161,7 +161,17 @@ public class ItemServiceImpl implements ItemService {
         param.put("sku.code", skuCode);
         
         Query query = new BasicQuery(param);
+        query.fields().include("no");
         query.fields().include("name");
+        query.fields().include("detail");
+        query.fields().include("files");
+        query.fields().include("typeId");
+        query.fields().include("originalPrice");
+        query.fields().include("lowest");
+        query.fields().include("publishDate");
+        query.fields().include("status");
+        query.fields().include("detailCodes");
+        
         query.fields().position("sku", 1);
         return mongoTemplate.findOne(query, Item.class);
     }

@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,7 +34,7 @@ import com.shop.common.base.BaseResult;
 import com.shop.common.base.Page;
 import com.shop.shopping.config.AlipayConfig;
 import com.shop.shopping.model.CartDto;
-import com.shop.shopping.model.OrderForm;
+import com.shop.shopping.param.OrderForm;
 import com.shop.shopping.service.ShoppingService;
 
 import static com.shop.common.base.BaseResult.fail;
@@ -62,9 +63,9 @@ public class UserController implements AlipayConfig {
     }
     
     @RequestMapping("/orderList.html")
-    public String orderList(HttpSession session, Page page) {
+    public String orderList(HttpSession session, Page page, ModelMap modelMap) {
         BaseUser user = (BaseUser) session.getAttribute(USER_SESSION);
-        orderService.listOrderByUserId(user.getUid(), page);
+        modelMap.put("orderPage", orderService.listOrderByUserId(user.getUid(), page));
         return "orderList";
     }
     
@@ -81,7 +82,7 @@ public class UserController implements AlipayConfig {
         attrs.put("carts", cartDtos);
         return "/cart";
     }
-
+    
     /**
      * 添加商品到购物车
      * @param cart 商品id, 库存码, 数量
@@ -94,11 +95,11 @@ public class UserController implements AlipayConfig {
         BaseUser user = (BaseUser) session.getAttribute(USER_SESSION);
         cart.setUserId(user.getUid());
         cart.setAddTime(new Date());
-
+        
         shoppingService.addCart(cart);
         return success();
     }
-
+    
     /**
      * 从购物车中移除商品
      * @param cartId
@@ -115,7 +116,7 @@ public class UserController implements AlipayConfig {
         }
         return fail("操作失败");
     }
-
+    
     /**
      * 获取购物车中商品数量
      * @param session
@@ -127,7 +128,7 @@ public class UserController implements AlipayConfig {
         BaseUser user = (BaseUser) session.getAttribute(USER_SESSION);
         return success(orderService.countCart(user.getUid()));
     }
-
+    
     /**
      * 更新购物车中特定商品的数量
      * @param session
@@ -142,14 +143,15 @@ public class UserController implements AlipayConfig {
         orderService.updateCartNum(id, num, user.getUid());
         return success();
     }
-
+    
     /**
      * 支付页面
      * @param cartIds 购物车商品id
      * @return
      */
     @RequestMapping("/payment.html")
-    public void payment(OrderForm orderForm, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void payment(OrderForm orderForm, HttpSession session, HttpServletRequest request, HttpServletResponse
+            response) throws IOException {
         BaseUser user = (BaseUser) session.getAttribute(USER_SESSION);
         Order order = shoppingService.checkout(orderForm, user.getUid());
         redirectToPay(response, request, order);
@@ -192,17 +194,24 @@ public class UserController implements AlipayConfig {
         return success();
     }
     
+    @RequestMapping("/redirectToPay.html")
+    public void redirectToPay(String orderId, HttpServletRequest request, HttpServletResponse response) throws
+            IOException {
+        redirectToPay(response, request, orderService.getOrderById(orderId));
+    }
     
-    private void redirectToPay(HttpServletResponse httpResponse, HttpServletRequest request, Order order) throws IOException {
-        AlipayClient alipayClient = new DefaultAlipayClient(URL,APP_ID,APP_PRIVATE_KEY,FORMAT,CHARSET,ALIPAY_PUBLIC_KEY,SIGN_TYPE);
+    private void redirectToPay(HttpServletResponse httpResponse, HttpServletRequest request, Order order) throws
+            IOException {
+        AlipayClient alipayClient = new DefaultAlipayClient(URL, APP_ID, APP_PRIVATE_KEY, FORMAT, CHARSET,
+                ALIPAY_PUBLIC_KEY, SIGN_TYPE);
         AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();//创建API对应的request
         alipayRequest.setReturnUrl(getBasePath(request) + AlipayConfig.RETURN_URL);
         alipayRequest.setNotifyUrl(getBasePath(request) + AlipayConfig.NOTIFY_URL);//在公共参数中设置回跳和通知地址
-    
+        
         List<OrderDetail> details = order.getOrderDetails();
         if (details.isEmpty()) {
             logger.error("订单{}的没有详情信息", order.getId());
-            return ;
+            return;
         }
         // 计算价格
         BigDecimal total = BigDecimal.ZERO;
@@ -219,20 +228,15 @@ public class UserController implements AlipayConfig {
         }
         // 处理subject显示
         String firstItemName = details.get(0).getItemName();
-        String subject = details.size() == 1 ? firstItemName : firstItemName+ "等,共" + details.size() + "件商品";
+        String subject = details.size() == 1 ? firstItemName : firstItemName + "等,共" + details.size() + "件商品";
         
-        alipayRequest.setBizContent("{" +
-                "    \"out_trade_no\":\"" + order.getOrderNum() + "\"," +
-                "    \"product_code\":\"FAST_INSTANT_TRADE_PAY\"," +
-                "    \"total_amount\":" + total.toString() + "," +
-                "    \"subject\":\"" + subject + "\"," +
-                "    \"body\":\"" + body.toString() + "\"," +
-                "    \"passback_params\":\"merchantBizType%3d3C%26merchantBizNo%3d2016010101111\"," +
-                "    \"extend_params\":{" +
-                "    \"sys_service_provider_id\":\"2088511833207846\"" +
-                "    }"+
-                "  }");//填充业务参数
-        String form="";
+        alipayRequest.setBizContent("{" + "    \"out_trade_no\":\"" + order.getOrderNum() + "\"," + "    " +
+                "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"," + "    \"total_amount\":" + total.toString() + "," + "" +
+                "    \"subject\":\"" + subject + "\"," + "    \"body\":\"" + body.toString() + "\"," + "    " +
+                "\"passback_params\":\"merchantBizType%3d3C%26merchantBizNo%3d2016010101111\"," + "    " +
+                "\"extend_params\":{" + "    \"sys_service_provider_id\":\"2088511833207846\"" + "    }" + "  }");
+        //填充业务参数
+        String form = "";
         try {
             form = alipayClient.pageExecute(alipayRequest).getBody(); //调用SDK生成表单
         } catch (AlipayApiException e) {

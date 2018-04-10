@@ -1,4 +1,4 @@
-package com.shop.shopping.model;
+package com.shop.shopping.param;
 
 /**
  * 用户下单表单

@@ -1,23 +1,15 @@
 package com.shop.shopping.config;
 
 import com.mongodb.MongoClientOptions;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
-import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.springframework.context.MessageSource;
+
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 
 import javax.annotation.Resource;
-import javax.servlet.Filter;
-import javax.validation.Validator;
+
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -54,6 +46,17 @@ public class Config {
 
             viewResolver.setStaticVariables(vars);
         }
+    }
+    
+//    @Bean
+//    @ConditionalOnMissingBean
+//    public OrdersDialect enumDialect() {
+//        return new OrdersDialect();
+//    }
+    
+    @Resource
+    public void setEnumDialect(SpringTemplateEngine templateEngine){
+        templateEngine.addDialect(new OrdersDialect());
     }
 
 //    @Bean

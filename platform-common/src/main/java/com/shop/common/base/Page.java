@@ -4,7 +4,6 @@ import java.util.List;
 
 /**
  * 公共Page
- * 注意:pageNo从0开始，为了和spring 进行对应
  */
 public class Page<T> {
     /**
