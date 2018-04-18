@@ -1,9 +1,11 @@
 package com.shop.common.base;
 
+import java.io.Serializable;
+
 /**
  * 通用的基础返回结果
  */
-public class BaseResult {
+public class BaseResult implements Serializable{
     public static final int SUCCESS = 1;
     public static final int FAIL = 0;
 

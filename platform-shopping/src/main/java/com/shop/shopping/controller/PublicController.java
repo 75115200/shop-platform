@@ -2,10 +2,13 @@ package com.shop.shopping.controller;
 
 import com.shop.base.item.entity.*;
 import com.shop.base.item.service.ItemService;
+import com.shop.base.order.entity.Comment;
 import com.shop.base.order.service.OrderService;
 import com.shop.base.user.entity.BaseUser;
 import com.shop.base.user.service.UserService;
 import com.shop.common.base.BaseResult;
+import com.shop.common.base.Page;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -32,10 +36,13 @@ import static com.shop.common.constant.Constant.USER_SESSION;
 @Controller
 @RequestMapping("/public")
 public class PublicController {
+    public static final int DEFAULT_PAGE_SIZE = 10;
     @Autowired
     private UserService userService;
     @Autowired
     private ItemService itemService;
+    @Autowired
+    private OrderService orderService;
 
     /**
      * 主页
@@ -97,6 +104,7 @@ public class PublicController {
 
         attr.put("properties",properties);
         attr.put("item", item);
+        attr.put("score", orderService.countAvgScore(itemId));
         return "detail";
     }
 
@@ -157,5 +165,17 @@ public class PublicController {
     @ResponseBody
     public BaseResult noPermission() {
         return fail("没有权限访问");
+    }
+    
+    /**
+     * 获取商品的评价
+     * @param itemId
+     * @param page
+     * @return
+     */
+    @RequestMapping("/getComment.json")
+    @ResponseBody
+    public BaseResult getComment(String itemId, @RequestParam(defaultValue = "1") int page) {
+        return success(orderService.listCommentByItemId(itemId, page, DEFAULT_PAGE_SIZE));
     }
 }

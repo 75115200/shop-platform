@@ -39,7 +39,7 @@
             <a href="#" data-toggle="modal" class="header_login_icon" data-target="#login_modal" th:if="${session.user} == null">
                 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
             </a>
-            <a href="" th:if="${session.user}">个人中心</a>
+            <a th:href="@{/user/ucenter.html}" th:if="${session.user}">个人中心</a>
         </div>
         <div class="header_center col-md-8 col-sm-8">
             <h1>
@@ -178,7 +178,7 @@
                 } else {
                     layer.msg("登录成功！");
                     setTimeout(function() {
-                        location.href = BASE_URL + "/public/home.html";
+                        location.reload();
                     }, 1000);
                 }
                 layer.close(loader);

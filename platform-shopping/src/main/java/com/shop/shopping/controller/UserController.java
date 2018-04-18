@@ -2,6 +2,7 @@ package com.shop.shopping.controller;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +25,11 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.shop.base.order.entity.Cart;
+import com.shop.base.order.entity.Comment;
 import com.shop.base.order.entity.Order;
 import com.shop.base.order.entity.OrderDetail;
 import com.shop.base.order.service.OrderService;
+import com.shop.base.order.stereotype.OrderStatus;
 import com.shop.base.user.entity.BaseUser;
 import com.shop.base.user.entity.BaseUserAddress;
 import com.shop.base.user.service.UserService;
@@ -200,6 +203,50 @@ public class UserController implements AlipayConfig {
         redirectToPay(response, request, orderService.getOrderById(orderId));
     }
     
+    /**
+     * 评论页面
+     * @param orderId 订单id
+     * @param modelMap
+     * @return
+     */
+    @RequestMapping("/comment.html")
+    public String comment(String orderId, Map<String, Object> modelMap) {
+        Order order = orderService.getOrderById(orderId);
+        if (order != null) {
+            modelMap.put("order", order);
+            modelMap.put("details", order.getOrderDetails());
+        }
+        return "comment";
+    }
+    
+    /**
+     * 提交订单评论
+     * @param orderNum 订单号
+     * @param score 评分
+     * @param content 内容
+     * @param detailId 商品详情id
+     * @param itemId 商品id
+     * @return
+     */
+    @RequestMapping("/comment.json")
+    @ResponseBody
+    public BaseResult comment(String orderNum, String[] score, String[] content, String[] detailId, String[] itemId) {
+        List<Comment> commentList = new ArrayList<>();
+        for (int i = 0; i < score.length; i++) {
+            Comment comment = new Comment();
+            comment.setScore(Float.valueOf(score[i]));
+            comment.setContent(content[i]);
+            comment.setItemId(itemId[i]);
+            comment.setOrderDetailId(detailId[i]);
+            comment.setCreateTime(new Date());
+            commentList.add(comment);
+        }
+        
+        orderService.saveComments(commentList);
+        orderService.updateOrderStatus(orderNum, OrderStatus.FINISHED);
+        return success();
+    }
+    
     private void redirectToPay(HttpServletResponse httpResponse, HttpServletRequest request, Order order) throws
             IOException {
         AlipayClient alipayClient = new DefaultAlipayClient(URL, APP_ID, APP_PRIVATE_KEY, FORMAT, CHARSET,
@@ -231,8 +278,8 @@ public class UserController implements AlipayConfig {
         String subject = details.size() == 1 ? firstItemName : firstItemName + "等,共" + details.size() + "件商品";
         
         alipayRequest.setBizContent("{" + "    \"out_trade_no\":\"" + order.getOrderNum() + "\"," + "    " +
-                "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"," + "    \"total_amount\":" + total.toString() + "," + "" +
-                "    \"subject\":\"" + subject + "\"," + "    \"body\":\"" + body.toString() + "\"," + "    " +
+                "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"," + "    \"total_amount\":" + total.toString() + "," +
+                "" + "    \"subject\":\"" + subject + "\"," + "    \"body\":\"" + body.toString() + "\"," + "    " +
                 "\"passback_params\":\"merchantBizType%3d3C%26merchantBizNo%3d2016010101111\"," + "    " +
                 "\"extend_params\":{" + "    \"sys_service_provider_id\":\"2088511833207846\"" + "    }" + "  }");
         //填充业务参数

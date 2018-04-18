@@ -7,6 +7,7 @@
     <title>尚裳</title>
     <link th:replace="dist">
     <link rel="stylesheet" th:href="@{/css/ucenter.css}">
+    <link rel="stylesheet" th:href="@{/css/star-rating-svg.css}">
 </head>
 <body>
 <h3>我的订单</h3>
@@ -43,7 +44,9 @@
                     <th:block th:if="${status.index == 0}">
                         <td th:rowspan="${#lists.size(order.orderDetails)}" th:text="${#orders.resolve(order.status)}">已付款</td>
                         <td th:rowspan="${#lists.size(order.orderDetails)}">
-                            <a th:if="${order.status >= 1}">物流详情</a>
+                            <a th:if="${order.status > 1}">物流详情</a>
+                            <a th:if="${order.status == 2 }" th:data-id="${order.id}" id="received_item">确认收货</a>
+                            <a th:if="${order.status == 3}" th:href="@{/user/comment.html} + '?orderId=' + ${order.id}">评价</a>
                             <a th:if="${order.status == 0}" th:href="@{/user/redirectToPay.html} + '?orderId=' + ${order.id}" target="_top">付款</a>
                         </td>
                     </th:block>
@@ -54,11 +57,39 @@
     <ul id="page_ul" class="pagination">
     </ul>
 </div>
+
 <script th:src="@{/js/bootstrap-paginator.js}"></script>
 <script th:inline="javascript">
     $(function() {
         window.parent.resizeIframe();
     })
+
+    // 确认收货
+    $("#received_item").click(function() {
+        layer.confirm('是否确认已经收到货物？', {icon: 3, title:'温馨提醒'}, function(index){
+            $.ajax({
+                "url":BASE_URL + "/manager/updateOrder.json",
+                "type":"post",
+                "data":{
+                    "id" : $("#received_item").data("id"),
+                    "status" : 3    //已收货状态
+                },
+                "success":function (res) {
+                    if (res.status == 1) {
+                        layer.msg("确认收货成功");
+                        location.reload();
+                        layer.close(index);
+                    } else {
+                        layer.msg(res.reason);
+                    }
+                },
+                "error":function(e) {
+                    layer.msg(e);
+                }
+            });
+        });
+    })
+
 
     var options = {
         currentPage: [[${orderPage.pageNo}]],
@@ -68,7 +99,6 @@
             return BASE_URL + "/user/orderList.html?pageNo=" + page;
         }
     }
-
     $('#page_ul').bootstrapPaginator(options);
 </script>
 </body>

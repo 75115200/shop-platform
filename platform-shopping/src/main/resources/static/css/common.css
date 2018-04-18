@@ -175,3 +175,6 @@ button {
     color: #212121;
     margin: 0 5px;
 }
+.hide {
+    display: none;
+}

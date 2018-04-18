@@ -3,15 +3,20 @@ package com.shop.base.order.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * 订单实体
  */
 @Entity
 @Table(name = "base_order")
-public class Order {
+public class Order implements Serializable{
 
     /**
      * 主键id
@@ -49,7 +54,7 @@ public class Order {
      * 订单状态
      */
     @Column(name = "status")
-    private int status;
+    private Integer status;
 
     /**
      * 快递单号
@@ -76,6 +81,7 @@ public class Order {
     private Date updateTime;
 
     @OneToMany(mappedBy = "order",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<OrderDetail> orderDetails;
 
     public String getId() {
@@ -117,15 +123,15 @@ public class Order {
     public void setReceiverAddr(String receiverAddr) {
         this.receiverAddr = receiverAddr;
     }
-
-    public int getStatus() {
+    
+    public Integer getStatus() {
         return status;
     }
-
-    public void setStatus(int status) {
+    
+    public void setStatus(Integer status) {
         this.status = status;
     }
-
+    
     public String getTrackNo() {
         return trackNo;
     }

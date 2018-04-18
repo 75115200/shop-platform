@@ -56,8 +56,11 @@ public class Page<T> {
     }
 
     public static Page createByBeginAndSize(int begin, int pageSize) {
-        int temp = begin/pageSize;
-        int pageNo = begin % pageSize > 0 ? temp + 1 : temp;
+        int pageNo = 1;
+        int temp = begin / pageSize;
+        if (temp != 0) {
+            pageNo = begin % pageSize > 0 ? temp + 1 : temp;
+        }
 
         Page page = new Page();
         page.setPageNo(pageNo);
@@ -123,5 +126,10 @@ public class Page<T> {
                 ", content=" + content +
                 ", sort=" + sort +
                 '}';
+    }
+    
+    public static void main(String[] args) {
+        Page page = createByBeginAndSize(0, 5);
+        System.out.println(page.getPageNo());
     }
 }

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8"></meta>
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <title>尚裳</title>
+    <link th:replace="dist">
+    <link rel="stylesheet" th:href="@{/css/ucenter.css}">
+    <link rel="stylesheet" th:href="@{/css/star-rating-svg.css}">
+</head>
+<body>
+<h3>商品评价</h3>
+<div class="text-center">
+    <form id="comment_form">
+        <table class="table table-bordered" style="text-align: center">
+            <tr>
+                <th width="380px" class="text-center">商品</th>
+                <th colspan="2" class="text-center">评价</th>
+            </tr>
+            <tr th:each="detail : ${details}">
+                <td class="table_order_item">
+                    <img class="table_order_img" width="80" height="80" th:src="${FILE_URL} + ${detail.itemImg}">
+                    <span class="table_order_name" th:text="${detail.itemName}">帅气衬衫</span>
+                    <!--<span class="table_order_sku" th:text="">颜色:白色</span>-->
+                </td>
+                <td width="120px">
+                    <span class="comment-rating" th:data-id="${detail.id}"></span>
+                </td>
+                <td>
+                    <textarea class="comment_content" name="content" placeholder="说点什么吧..."></textarea>
+                </td>
+                <input type="hidden" name="detailId" th:value="${detail.id}">
+                <input type="hidden" name="itemId" th:value="${detail.itemId}">
+            </tr>
+        </table>
+        <input type="hidden" name="orderNum" th:value="${order.orderNum}">
+    </form>
+    <button class="simple_btn" id="submit_btn">提交</button>
+</div>
+
+<script th:src="@{/js/jquery.star-rating-svg.js}"></script>
+<script th:inline="javascript">
+    $(function() {
+        window.parent.resizeIframe();
+    })
+
+    $(".comment-rating").starRating({
+        initialRating: 0,
+        starSize: 18,
+        readOnly : false,
+        disableAfterRate: false,
+        callback:function(score, element) {
+            var detailId = $(element).data("id");
+            var rateInput = $("#rate_" + detailId);
+            if (rateInput[0]) {
+                rateInput.val(score);
+            } else {
+                var rate_iput = "<input name='score' id='rate_" + detailId + "' type='hidden' value='" + score + "'/>";
+                $(element).parent().append(rate_iput);
+            }
+        }
+    });
+
+    $("#submit_btn").click(function() {
+        $.ajax({
+            "url": BASE_URL + "/user/comment.json",
+            "type" : "post",
+            "data" : $("#comment_form").serialize(),
+            "success" : function(res) {
+                if (res.status == 1) {
+                    layer.msg("评论成功");
+                    location.href = BASE_URL + "/user/orderList.html";
+                } else {
+                    layer.msg(res.reason);
+                }
+            },
+            "error" : function (res) {
+                layer.msg(res);
+            }
+        })
+    });
+</script>
+</body>
+</html>

@@ -56,9 +56,6 @@ public class AlipayController {
     
     private void doPaidCallback(Map<String, String> param) {
         String orderNum = param.get("out_trade_no");
-        int result = orderService.updateOrderStatus(orderNum, OrderStatus.PAID.getStatus());
-        if (result <= 0) {
-            logger.error("订单号:" + orderNum + "更新已支付状态失败");
-        }
+        orderService.updateOrderStatus(orderNum, OrderStatus.PAID);
     }
 }

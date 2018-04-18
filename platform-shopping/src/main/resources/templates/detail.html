@@ -25,7 +25,7 @@
         <div class="container">
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#detail_tab">详情</a></li>
-                <li><a data-toggle="tab" href="#comment_tab">评价</a></li>
+                <li><a data-toggle="tab" href="#comment_tab" onclick="getComment(1)">评价</a></li>
             </ul>
             <div class="tab-content">
                 <div id="detail_tab" class="tab-pane active">
@@ -40,7 +40,7 @@
                         <div class="overflow_wrap">
                             <div class="detail_desc" th:text="${item.detail}">商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述</div>
                         </div>
-                        <span class="my-rating"></span>
+                        <span class="my-rating" data-rating="4" th:data-rating="${score}"></span>
                         <p>
                             <span class="old_price" th:text="${item.originalPrice}">¥350</span>
                             <span class="new_price" id="price" th:text="${item.lowest}">¥150</span>
@@ -54,46 +54,11 @@
                     </div>
                 </div>
                 <div id="comment_tab" class="tab-pane">
-                    <div class="comment">
-                        <a href="#" class="header_login_icon comment_left" data-toggle="modal" data-target=""><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
-                        <div class="comment_right">
-                            <div class="my-rating"></div>
-                            <p>这是一条评论相关的信息</p>
-                            <p class="order_info">黄色-中码</p>
-                            <p class="order_time">2018-03-11 23:59:59</p>
-                        </div>
-                        <div class="clearfix"></div>
+                    <div id="comment_list">
                     </div>
-
-                    <div class="comment">
-                        <a href="#" class="header_login_icon comment_left" data-toggle="modal" data-target=""><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
-                        <div class="comment_right">
-                            <div class="my-rating"></div>
-                            <p>这是一条评论相关的信息</p>
-                            <p class="order_info">黄色-中码</p>
-                            <p class="order_time">2018-03-11 23:59:59</p>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="comment">
-                        <a href="#" class="header_login_icon comment_left" data-toggle="modal" data-target=""><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
-                        <div class="comment_right">
-                            <div class="my-rating"></div>
-                            <p>这是一条评论相关的信息</p>
-                            <p class="order_info">黄色-中码</p>
-                            <p class="order_time">2018-03-11 23:59:59</p>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="comment">
-                        <a href="#" class="header_login_icon comment_left" data-toggle="modal" data-target=""><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
-                        <div class="comment_right">
-                            <div class="my-rating"></div>
-                            <p>这是一条评论相关的信息</p>
-                            <p class="order_info">黄色-中码</p>
-                            <p class="order_time">2018-03-11 23:59:59</p>
-                        </div>
-                        <div class="clearfix"></div>
+                    <div class="text-center">
+                        <ul id="page_ul" class="pagination">
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -132,6 +97,7 @@
     </div>
     <input type="hidden" id="itemId" name="itemId" th:value="${item.id}">
 
+    <script th:src="@{/js/bootstrap-paginator.js}"></script>
     <script th:src="@{/js/jquery.star-rating-svg.js}"></script>
     <script>
         $(".attr_choose button").click(function() {
@@ -192,12 +158,6 @@
                 });
             }
         })
-
-        $(".my-rating").starRating({
-            initialRating: 4,
-            starSize: 18,
-            readOnly: true
-        });
 
         $("#add_btn").click(function() {
             if (!isLogined()) {
@@ -267,6 +227,70 @@
             var poTop = (fatherHeight - tanHeight)/2;
             var poLeft = (fatherWidth - tanWeight)/2;
             selectorName.css({"left": poLeft + "px", "top":poTop + "px", "display":"block"});//设置position位置
+        }
+
+        var options = {
+            bootstrapMajorVersion : 3,
+            onPageClicked : function(event, originalEvent, type,page) {
+                getComment(page);
+            }
+        }
+        $('#page_ul').bootstrapPaginator(options);
+
+        function getComment(page) {
+            var loader = layer.load(1, {
+                shade: [0.1,'#fff'] //0.1透明度的白色背景
+            });
+
+            $.ajax({
+                "url" : BASE_URL + "/public/getComment.json",
+                "type" : "get",
+                "data" : {
+                    "itemId" : $("#itemId").val(),
+                    "page" : page
+                },
+                "success": function(res) {
+                    console.log(res);
+                    if (res.status == 0) {
+                        layer.msg(res.reason);
+                        return ;
+                    }
+                    appendComment(res.data);
+                    layer.close(loader);
+                },
+                "error" : function (error) {
+                    layer.msg(error);
+                }
+            })
+        }
+
+        function appendComment(data) {
+            var comments = data.content;
+            $("#comment_list").empty();
+            for (var i = 0; i < comments.length; i++) {
+                var user =  '<div class="comment"><a href="#" class="header_login_icon comment_left" data-toggle="modal" data-target=""><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>';
+                var rate = '<div class="comment_right"><div class="my-rating" data-rating="' + comments[i].score + '"></div>';
+                var content = '<p>' + comments[i].content + '</p>'
+                var time = '<p class="order_time">' + comments[i].createTime + '</p></div><div class="clearfix"></div></div>';
+                $("#comment_list").append(user + rate + content + time);
+            }
+            resetPage(data.page, data.pageSum);
+            $(".my-rating").starRating({
+                // initialRating: 4,
+                starSize: 18,
+                readOnly: true
+            });
+        }
+
+        $(".my-rating").starRating({
+            starSize: 18,
+            readOnly: true
+        });
+
+        function resetPage(current, total) {
+            options.currentPage = current;
+            options.totalPages = total;
+            $('#page_ul').bootstrapPaginator(options);
         }
     </script>
 </body>

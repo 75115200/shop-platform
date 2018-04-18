@@ -5,6 +5,8 @@ import com.shop.base.item.entity.ItemProperty;
 import com.shop.base.item.entity.ItemPropertyDetail;
 import com.shop.base.item.entity.ItemType;
 import com.shop.base.item.service.ItemService;
+import com.shop.base.order.entity.Order;
+import com.shop.base.order.service.OrderService;
 import com.shop.common.base.BaseResult;
 import com.shop.common.base.Page;
 import com.shop.file.model.FileInfo;
@@ -32,6 +34,9 @@ public class ManagerController {
 
     @Autowired
     private ItemService itemService;
+    
+    @Autowired
+    private OrderService orderService;
 
     @RequestMapping("/home.html")
     public String home() {
@@ -106,7 +111,18 @@ public class ManagerController {
         return "/admin/property_detail_add";
     }
 
-
+    @RequestMapping("/orderList.html")
+    public String orderList() {
+        return "/admin/order_list";
+    }
+    
+    @RequestMapping("/listOrder.json")
+    @ResponseBody
+    public BaseResult listOrderList(int begin, int pageSize, Order orderExample) {
+        Page page = Page.createByBeginAndSize(begin, pageSize);
+        return success(orderService.listOrderByExample(orderExample, page));
+    }
+    
     /**
      * 添加属性值
      * @param id
@@ -260,7 +276,7 @@ public class ManagerController {
         Page page = Page.createByBeginAndSize(begin, pageSize);
         return success(itemService.listItemByType(typeId, page));
     }
-
+    
     private List<String> getFileIds(List<FileInfo> fileInfos) {
         List<String> list = new ArrayList<>();
         for (FileInfo f : fileInfos) {
@@ -268,4 +284,17 @@ public class ManagerController {
         }
         return list;
     }
+    
+    /**
+     * 更新订单信息
+     * 根据订单id更新订单信息
+     * @return
+     */
+    @RequestMapping("/updateOrder.json")
+    @ResponseBody
+    public BaseResult updateOrder(Order order) {
+        orderService.updateOrder(order);
+        return success();
+    }
+    
 }

@@ -123,13 +123,15 @@ public class ShoppingServiceImpl implements ShoppingService {
             
             // 创建订单详情信息
             OrderDetail detail = new OrderDetail();
+            detail.setItemId(item.getId());
             detail.setItemName(item.getName());
             detail.setItemImg(item.getFiles().get(0));
             detail.setNum(num);
             detail.setPrice(itemSku.getPrice());
             detail.setItemSku(cart.getSkuCode());
-            details.add(detail);
             detail.setOrder(order);
+    
+            details.add(detail);
         }
     
         orderService.removeCart(userId, cartIds);

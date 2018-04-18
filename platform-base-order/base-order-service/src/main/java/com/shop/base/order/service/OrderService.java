@@ -1,7 +1,9 @@
 package com.shop.base.order.service;
 
 import com.shop.base.order.entity.Cart;
+import com.shop.base.order.entity.Comment;
 import com.shop.base.order.entity.Order;
+import com.shop.base.order.stereotype.OrderStatus;
 import com.shop.common.base.Page;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -71,7 +73,7 @@ public interface OrderService {
      * @param status
      * @return
      */
-    int updateOrderStatus(String orderNum, int status);
+    void updateOrderStatus(String orderNum, OrderStatus status);
     
     /**
      * 列出用户订单
@@ -88,4 +90,31 @@ public interface OrderService {
      * @return
      */
     Order getOrderById(String orderId);
+    
+    /**
+     * 根据Order的部分属性进行查询
+     * @param order
+     * @param page
+     * @return
+     */
+    Page<Order> listOrderByExample(Order order, Page page);
+    
+    void updateOrder(Order order);
+    
+    /**
+     * 保存评论
+     * @param commentList
+     * @return
+     */
+    List<Comment> saveComments(List<Comment> commentList);
+    
+    Page<Comment> listCommentByItemId(String itemId, int page, int pageSize);
+    
+    /**
+     * 统计商品平均评分
+     * 保留两位小数，向下取整
+     * @param itemId
+     * @return
+     */
+    float countAvgScore(String itemId);
 }
