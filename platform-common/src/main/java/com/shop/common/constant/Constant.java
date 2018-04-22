@@ -25,4 +25,6 @@ public interface Constant {
      * 默认编码
      */
     Charset UTF8 = Charset.forName("utf-8");
+    
+    String FILE_KEY = "files";
 }

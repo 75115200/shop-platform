@@ -8,6 +8,8 @@ import com.shop.base.user.entity.BaseUser;
 import com.shop.base.user.service.UserService;
 import com.shop.common.base.BaseResult;
 import com.shop.common.base.Page;
+import com.shop.shopping.entity.SysBanner;
+import com.shop.shopping.service.ShoppingService;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -43,6 +46,8 @@ public class PublicController {
     private ItemService itemService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ShoppingService shoppingService;
 
     /**
      * 主页
@@ -177,5 +182,11 @@ public class PublicController {
     @ResponseBody
     public BaseResult getComment(String itemId, @RequestParam(defaultValue = "1") int page) {
         return success(orderService.listCommentByItemId(itemId, page, DEFAULT_PAGE_SIZE));
+    }
+    
+    @RequestMapping("/getBanner.json")
+    @ResponseBody
+    public BaseResult getBanner() {
+        return success(shoppingService.listSysBanner());
     }
 }

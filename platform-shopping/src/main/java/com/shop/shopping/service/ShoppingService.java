@@ -2,6 +2,7 @@ package com.shop.shopping.service;
 
 import com.shop.base.order.entity.Cart;
 import com.shop.base.order.entity.Order;
+import com.shop.shopping.entity.SysBanner;
 import com.shop.shopping.model.CartDto;
 import com.shop.shopping.param.OrderForm;
 
@@ -34,4 +35,29 @@ public interface ShoppingService {
      */
     Order checkout(OrderForm orderForm, String userId);
     
+    /**
+     * 列出当前所有banner
+     * @return
+     */
+    List<SysBanner> listSysBanner();
+    
+    /**
+     * 保存轮播
+     * @param sysBanner
+     * @return
+     */
+    SysBanner saveSysBanner(SysBanner sysBanner);
+    
+    /**
+     * 获取轮播
+     * @param id
+     * @return
+     */
+    SysBanner getSysBanner(String id);
+    
+    /**
+     * 删除轮播
+     * @param id
+     */
+    void delSysBanner(String id);
 }

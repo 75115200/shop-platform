@@ -48,7 +48,7 @@ public class FileController {
     @RequestMapping("/upload.json")
     @ResponseBody
     @CrossOrigin
-    public BaseResult upload(@RequestParam("file") MultipartFile[] file, @RequestParam(required = true) String callback, HttpServletRequest request) {
+    public Object upload(@RequestParam("file") MultipartFile[] file, @RequestParam(required = true) String callback, HttpServletRequest request) {
         if (file == null) {
             return BaseResult.fail("缺乏上传文件");
         }
@@ -80,7 +80,7 @@ public class FileController {
             LOGGER.error("上传文件失败");
             return BaseResult.fail("上传文件失败，IOE异常");
         }
-        return BaseResult.success(result);
+        return result;
     }
 
     @RequestMapping(value = "/upload.json", method = RequestMethod.OPTIONS)

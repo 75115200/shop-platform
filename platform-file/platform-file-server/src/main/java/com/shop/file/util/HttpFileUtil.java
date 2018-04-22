@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.shop.common.constant.Constant.FILE_KEY;
+
 /**
  * 封装http请求工具
  */
 public class HttpFileUtil {
     private static final Logger logger = LoggerFactory.getLogger(HttpFileUtil.class);
-
-    private static final String FILE_KEY = "files";
 
     /**
      * 文件上传回调

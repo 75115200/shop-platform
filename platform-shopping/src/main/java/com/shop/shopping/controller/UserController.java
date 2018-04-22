@@ -72,6 +72,11 @@ public class UserController implements AlipayConfig {
         return "orderList";
     }
     
+    @RequestMapping("/person.html")
+    public String person() {
+        return "person";
+    }
+    
     /**
      * 购物车页面
      * @param attrs

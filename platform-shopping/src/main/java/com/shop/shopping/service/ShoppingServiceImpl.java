@@ -11,9 +11,12 @@ import com.shop.base.order.entity.OrderDetail;
 import com.shop.base.order.service.OrderService;
 import com.shop.base.order.stereotype.OrderStatus;
 import com.shop.common.base.BusinessException;
+import com.shop.shopping.dao.SysBannerDao;
+import com.shop.shopping.entity.SysBanner;
 import com.shop.shopping.model.CartDto;
 import com.shop.shopping.param.OrderForm;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -35,6 +38,9 @@ public class ShoppingServiceImpl implements ShoppingService {
     @Autowired
     private ItemService itemService;
 
+    @Autowired
+    private SysBannerDao bannerDao;
+    
     @Override
     public void addCart(Cart cart) {
         Item item = itemService.getItem(cart.getItemId());
@@ -143,6 +149,32 @@ public class ShoppingServiceImpl implements ShoppingService {
         order.setOrderDetails(details);
         return orderService.saveOrder(order);
     }
+    
+    @Override
+    public List<SysBanner> listSysBanner() {
+        return bannerDao.findAllByOrderBySeqAsc();
+    }
+    
+    @Override
+    public SysBanner saveSysBanner(SysBanner sysBanner) {
+        if (StringUtils.isNotBlank(sysBanner.getId())) {
+            SysBanner updated = bannerDao.getOne(sysBanner.getId());
+            BeanUtils.copyProperties(sysBanner, updated);
+            return bannerDao.save(updated);
+        }
+        return bannerDao.save(sysBanner);
+    }
+    
+    @Override
+    public SysBanner getSysBanner(String id) {
+        return bannerDao.findOne(id);
+    }
+    
+    @Override
+    public void delSysBanner(String id) {
+        bannerDao.delete(id);
+    }
+    
     
     /**
      * 生成订单号

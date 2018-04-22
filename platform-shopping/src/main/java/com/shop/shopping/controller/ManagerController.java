@@ -10,12 +10,16 @@ import com.shop.base.order.service.OrderService;
 import com.shop.common.base.BaseResult;
 import com.shop.common.base.Page;
 import com.shop.file.model.FileInfo;
+import com.shop.shopping.entity.SysBanner;
+import com.shop.shopping.service.ShoppingService;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
@@ -23,6 +27,7 @@ import java.util.*;
 import static com.shop.common.base.BaseResult.fail;
 import static com.shop.common.base.BaseResult.success;
 import static com.shop.common.base.Page.createByBeginAndSize;
+import static com.shop.common.constant.Constant.FILE_KEY;
 import static org.hibernate.internal.util.collections.CollectionHelper.isNotEmpty;
 
 /**
@@ -37,6 +42,9 @@ public class ManagerController {
     
     @Autowired
     private OrderService orderService;
+    
+    @Autowired
+    private ShoppingService shoppingService;
 
     @RequestMapping("/home.html")
     public String home() {
@@ -79,6 +87,22 @@ public class ManagerController {
     public String itemList() {
         return "/admin/item_list";
     }
+    
+    @RequestMapping("/sysBanner.html")
+    public String sysBanner(Map<String, Object> modelMap) {
+        List<SysBanner> banners = shoppingService.listSysBanner();
+        modelMap.put("banners", banners);
+        return "/admin/sys_banner";
+    }
+    
+    @RequestMapping("/sysBannerAdd.html")
+    public String sysBannerAdd(String id, Map<String, Object> modelMap) {
+        if (StringUtils.isNotBlank(id)) {
+            modelMap.put("banner", shoppingService.getSysBanner(id));
+        }
+        return "/admin/sys_banner_add";
+    }
+    
 
     @RequestMapping("/itemAdd.html")
     public String itemAdd(Map<String, Object> attrs) {
@@ -275,6 +299,33 @@ public class ManagerController {
     public BaseResult listItemByPage(String typeId, int begin, int pageSize) {
         Page page = Page.createByBeginAndSize(begin, pageSize);
         return success(itemService.listItemByType(typeId, page));
+    }
+    
+    /**
+     * 添加轮播图
+     */
+    @RequestMapping("/saveSysBanner.json")
+    @ResponseBody
+    public BaseResult saveSysBanner(SysBanner sysBanner, @RequestParam(name = FILE_KEY, required = false) String files) {
+        if (StringUtils.isNotBlank(files)) {
+            sysBanner.setUrl(files);
+        }
+        shoppingService.saveSysBanner(sysBanner);
+        return success();
+    }
+    
+    /**
+     * 删除轮播图
+     */
+    @RequestMapping("/delSysBanner.json")
+    @ResponseBody
+    public BaseResult delSysBanner(String id) {
+        if (StringUtils.isBlank(id)) {
+            return fail("id不能为空");
+        }
+        
+        shoppingService.delSysBanner(id);
+        return success();
     }
     
     private List<String> getFileIds(List<FileInfo> fileInfos) {

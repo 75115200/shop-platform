@@ -1,0 +1,129 @@
+﻿<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta th:replace="admin/head::meta">
+<style>
+	.text_center {
+		text-align: center;
+	}
+</style>
+</head>
+<body th:with="host=${#httpServletRequest.getScheme()} + '://' + ${#httpServletRequest.getServerName()} + ':' + ${#httpServletRequest.getServerPort()}  + ${#httpServletRequest.getContextPath()}">
+<article class="page-container">
+	<form method="post" class="form form-horizontal" id="sys_banner_add">
+		<div class="row text_center">
+			<img id="preview" class="radius" width="325" height="70px" th:src="${banner} ? ${FILE_URL} + ${banner.url}">
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>图片：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span class="btn-upload">
+					<a href="javascript:void();" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
+					<input type="file" class="input-file" placeholder="" id="url" name="file">
+				</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">标题：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="轮播标题" id="title" name="title" th:value="${banner} ? ${banner.title}">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">点击后跳转：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="点击后跳转链接" id="link" name="link" th:value="${banner} ? ${banner.link}">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">显示顺序：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="number" class="input-text" value="" placeholder="显示顺序" id="seq" name="seq" th:value="${banner} ? ${banner.seq}">
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<button type="button" class="btn btn-success radius" id="banner_save" name="banner_save"><i class="icon-ok"></i> 确定</button>
+			</div>
+		</div>
+		<input type="hidden" name="id" id="bannerId" th:if="${banner}" th:value="${banner.id}">
+		<input type="hidden" name="url" th:if="${banner}" th:value="${banner.url}">
+		<input type="hidden" name="callback" th:value="${host} + '/manager/saveSysBanner.json'">
+	</form>
+</article>
+
+<div th:replace="admin/footer::common"></div>
+<script type="text/javascript">
+$(function(){
+	$(".permission-list dt input:checkbox").click(function(){
+		$(this).closest("dl").find("dd input:checkbox").prop("checked",$(this).prop("checked"));
+	});
+	$(".permission-list2 dd input:checkbox").click(function(){
+		var l =$(this).parent().parent().find("input:checked").length;
+		var l2=$(this).parents(".permission-list").find(".permission-list2 dd").find("input:checked").length;
+		if($(this).prop("checked")){
+			$(this).closest("dl").find("dt input:checkbox").prop("checked",true);
+			$(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",true);
+		}
+		else{
+			if(l==0){
+				$(this).closest("dl").find("dt input:checkbox").prop("checked",false);
+			}
+			if(l2==0){
+				$(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",false);
+			}
+		}
+	});
+});
+
+var submitUrl = $("bannerId").val() ? FILE_UPLOAD_URL : BASE_URL + "/manager/saveSysBanner.json";
+$("#url").change(function() {
+    showPreview("url", "preview");
+    submitUrl = FILE_UPLOAD_URL;
+});
+
+
+$("#banner_save").click(function() {
+    var formData = new FormData($("#sys_banner_add")[0]);
+
+    $.ajax ({
+        url : submitUrl,
+        type : 'post',
+        processData: false,
+        contentType: false,
+        data: formData,
+        dataType : 'json',
+        success : function (res) {
+            if (res.status == 1) {
+                window.parent.reload();
+                // $.Huimodalalert("添加成功", 1500);
+                // var index = parent.layer.getFrameIndex(window.name);
+                // parent.layer.close(index);
+            } else {
+                $.Huimodalalert(res.message, 1500);
+            }
+        },
+        error : function () {
+            alert("错误");
+        }
+    });
+});
+
+function showPreview(fileId, imgId) {
+    var file = document.getElementById(fileId);
+    var ua = navigator.userAgent.toLowerCase();
+    var url = '';
+    if(/msie/.test(ua)) {
+        url = file.value;
+    } else {
+        url = window.URL.createObjectURL(file.files[0]);
+    }
+    document.getElementById(imgId).src = url;
+}
+
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>
